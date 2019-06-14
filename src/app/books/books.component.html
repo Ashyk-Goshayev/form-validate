@@ -1,0 +1,19 @@
+<div class="main">
+    <mat-grid-list cols="4" rowHeight="1:1">
+        <mat-grid-tile *ngFor="let tile of tiles | 
+        slice: lowValue : highValue">
+          <div class="data">
+            <img src="{{tile.image}}">
+            <span>{{tile.name}}</span>
+            <button type="button" >{{tile.price}}</button>
+          </div>
+        </mat-grid-tile>
+    </mat-grid-list>
+    <mat-paginator [length]="tiles.length"
+    [pageSize]="pageSize"
+    [pageSizeOptions]="pageSizeOptions"
+    (page)="pageEvent = getPaginatorData($event)"
+    (changes)="doSomething($event)"
+    >
+    </mat-paginator>
+</div>

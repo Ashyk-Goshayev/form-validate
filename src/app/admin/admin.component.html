@@ -1,0 +1,111 @@
+<div class="layer"  [ngStyle]="{'display': isDisplayed}"></div>
+<div class="layer"  [ngStyle]="{'display': isDisplayedPop}"></div>
+<div class="layer"  [ngStyle]="{'display': editUser}"></div>
+<div class="layer"  [ngStyle]="{'display': newBook}"></div>
+<div class="exit" (click)='openBook()' [ngStyle]="{'display': newBook}" >X</div>
+<div class="exit" (click)='togglePop()' [ngStyle]="{'display': isDisplayed}" >X</div>
+<div class="exit" (click)='editValue(element)' [ngStyle]="{'display': editUser}" >X</div>
+<div class="btns">
+  <button (click)='togglePop()'>Add User</button>
+  <button (click)='openBook()' >Add New Book</button>
+</div>
+
+<div class="addBook" [ngStyle]="{'display': newBook}" >
+    <form [formGroup]="exampleForm">
+        <div class="form-group">
+            <input formControlName="name">
+            <input formControlName="about" >
+            <input formControlName="price">
+            <input type="file" formControlName="image" (change)='getURL($event.target)'>
+          <button type="submit" (click)="addBook()" >add</button>
+        </div>
+</form>
+</div>
+
+
+<div class="pop" [ngStyle]="{'display': isDisplayedPop}" >
+  <h2 mat-dialog-title>Delete all</h2>
+  <mat-dialog-content>Are you sure?</mat-dialog-content>
+  <mat-dialog-actions>
+    <button mat-button (click)='openDialog(this)' >No</button>
+    <!-- The mat-dialog-close directive optionally accepts a value as a result for the dialog. -->
+    <button mat-button  (click)='deleteRow()' >Yes</button>
+  </mat-dialog-actions>
+</div>
+
+<form class="popup" [ngStyle]="{'display': editUser}">
+  <mat-form-field>
+    <input matInput value="{{loginValue}}" placeholder="email" #email_1>
+  </mat-form-field>
+  
+  <mat-form-field>
+    <input matInput value="{{passValue}}" type="password" placeholder="password" #password_1>
+  </mat-form-field>
+  <button mat-button type="submit" (click)='confirm(email_1.value, password_1.value)' >Confirm</button>
+</form>
+
+
+<form class="popup" [ngStyle]="{'display': isDisplayed}">
+  <mat-form-field>
+    <input matInput placeholder="email" #email>
+  </mat-form-field>
+  
+  <mat-form-field>
+    <input matInput type="password" placeholder="password" #password>
+  </mat-form-field>
+  <button mat-button (click)="openSnackBar(email.value, password.value)" type="submit" >Add</button>
+</form>
+<table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+
+  <!-- Checkbox Column -->
+  <ng-container matColumnDef="select">
+    <th mat-header-cell *matHeaderCellDef>
+      <mat-checkbox (change)="$event ? masterToggle() : null"
+                    [checked]="selection.hasValue() && isAllSelected()"
+                    [indeterminate]="selection.hasValue() && !isAllSelected()"
+                    [aria-label]="checkboxLabel()">
+      </mat-checkbox>
+    </th>
+    <td mat-cell *matCellDef="let row">
+      <mat-checkbox (click)="$event.stopPropagation()"
+                    (change)="$event ? selection.toggle(row) : null"
+                    [checked]="selection.isSelected(row)"
+                    [aria-label]="checkboxLabel(row)">
+      </mat-checkbox>
+    </td>
+  </ng-container>
+
+  <!-- Position Column -->
+  <ng-container matColumnDef="position">
+    <th mat-header-cell *matHeaderCellDef> No. </th>
+    <td mat-cell *matCellDef="let element"> {{element.position}} </td>
+  </ng-container>
+
+  <!-- Name Column -->
+  <ng-container matColumnDef="email">
+    <th mat-header-cell *matHeaderCellDef> Name </th>
+    <td mat-cell *matCellDef="let element"> {{element.email}} </td>
+  </ng-container>
+
+  <!-- password Column -->
+  <ng-container matColumnDef="password">
+    <th mat-header-cell *matHeaderCellDef> Password </th>
+    <td mat-cell *matCellDef="let element"> {{element.password}} </td>
+  </ng-container>
+
+  <!-- Symbol Column -->
+  <ng-container matColumnDef="delete">
+    <th mat-header-cell *matHeaderCellDef > Delete </th>
+    <td mat-cell  *matCellDef="let element"> <button  (click)='openDialog(element)' >{{element.delete}}</button></td>
+  </ng-container>
+
+  <ng-container matColumnDef="edit">
+    <th mat-header-cell *matHeaderCellDef> Edit </th>
+    <td mat-cell *matCellDef="let element"> <button (click)='editValue(element)'>{{element.edit}}</button></td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns;"
+      (click)="selection.toggle(row)">
+  </tr>
+</table>

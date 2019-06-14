@@ -1,0 +1,21 @@
+<ng-container *ngIf="true">
+    <div class="container">
+        <form [formGroup]="exampleForm">
+          <div class="form-group">
+              <div class="logo">
+                  <i class="far fa-user"></i>
+              </div>
+              <input class="form-control" formControlName="email" placeholder="example@mail.com" required minlength="3">
+              <div class="pass">
+                  <input class="form-control" type="{{isVisible}}" formControlName="password" placeholder="Password" required><i (click)='showPassword()' class="fas fa-lock"></i>
+              </div>
+              <div class="pass">
+                  <input class="form-control" type="{{isVisible}}" formControlName="passwordRepeat" placeholder="confirm password" required><i (click)='showPassword()' class="fas fa-lock"></i>
+              </div>
+          </div>
+          <button type="submit" class="reg" (click)="onsubmit()" >Register</button>
+        
+        </form>
+      </div>
+</ng-container>
+
