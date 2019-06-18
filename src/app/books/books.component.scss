@@ -88,11 +88,32 @@ mat-paginator {
     height: 91.5vh;
     left: 50%;
     transform: translate(-50%);
+    .leftSide {
+        z-index: 7;
+        width: 270px;
+        height: 750px;
+        position: absolute;
+        background: white;
+        left: -21%;
+        .example-container {
+            height: 750px;
+            overflow: auto;
+          }
+          
+          table {
+            width: 100%;
+            height: 750px;
+            img{
+                height: 50px;;
+            }
+          }
+          
+          tr.mat-footer-row {
+            font-weight: bold;
+          }
+          
+          .mat-table-sticky {
+            border-top: 1px solid #e0e0e0;
+          }
 }
-.leftSide {
-    
-    width: 200px;
-    width: 200px;
-    position: absolute;
-    background: white;
 }

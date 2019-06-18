@@ -1,9 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import {PageEvent} from '@angular/material/paginator';
 import { LocalStorageService } from '../local-storage.service'
 import { Router, ActivatedRoute } from '@angular/router'
 import { Observable } from 'rxjs'
 import { BookServiceService } from '../book-service.service'
+import {MatPaginator} from '@angular/material/paginator';
+import {MatTableDataSource} from '@angular/material/table';
+
 export interface Tile {
   name: string,
   about: string,
@@ -34,12 +37,12 @@ export class BooksComponent implements OnInit {
   cartLength : number;
   pageEvent: PageEvent;
   showContent : Observable<Tile>
- 
+
   constructor(private localStore : LocalStorageService, private router : Router, private service : BookServiceService) {
   this.bookInfo()
   this.tiles = this.allTiles;
   this.localStore.getCart()
-  console.log(this.ex)
+
   }
   ex : number[] = []
   example : Price[]
@@ -83,9 +86,15 @@ export class BooksComponent implements OnInit {
     alert(setPageSizeOptionsInput);
     this.pageSizeOptions = setPageSizeOptionsInput.split(',').map(str => +str);
   }
+  displayedColumns = ['item', 'cost'];
+  transactions: Transaction[] = [
+    
+  ];
   ngOnInit() {
+   fetch(' http://localhost:3000/cart').then(elem=> elem.json()).then(item=> this.transactions = item.reverse())
   }
-  
+  getTotalCost() {
+  }
   getPaginatorData(event){
     console.log(event);
     if(event.pageIndex === this.pageIndex + 1){
@@ -99,4 +108,9 @@ export class BooksComponent implements OnInit {
       this.pageIndex = event.pageIndex;
 }
 
+}
+
+export interface Transaction {
+  image: string;
+  name: string;
 }
