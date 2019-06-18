@@ -9,9 +9,11 @@ import { CanActivate, Router } from '@angular/router';
   providedIn: 'root'
 })
 export class AuthGuard implements CanActivate {
-  constructor( private localStore : LocalStorageService, private router : Router ){}
+  constructor( private localStore : LocalStorageService, private router : Router ){
+
+  }
   canActivate(): boolean {
-    if(this.localStore.isAdminLogin){
+    if(this.localStore.currentUser === 'admin@gmail.com'){
       return true
     }else{
       this.router.navigate(['signIn'])

@@ -12,7 +12,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { LocalStorageService } from './local-storage.service'
 import { StorageServiceModule} from 'angular-webstorage-service';
 import { RegisterComponent } from './register/register.component';
-
+import { BookServiceService } from './book-service.service'
 import {
   MatAutocompleteModule,
   MatBadgeModule,
@@ -54,6 +54,7 @@ import {
 import { BooksComponent } from './books/books.component';
 import { AdminComponent } from './admin/admin.component';
 import { AuthGuard } from './auth.guard';
+import { CartComponent } from './cart/cart.component';
 
 const routes: Routes = [];
 
@@ -64,7 +65,8 @@ const routes: Routes = [];
     SignInComponent,
     RegisterComponent,
     BooksComponent,
-    AdminComponent
+    AdminComponent,
+    CartComponent
 
   ],
   imports: [
@@ -117,7 +119,7 @@ const routes: Routes = [];
     preventDuplicates: true
   })
   ],
-  providers: [LocalStorageService, AuthGuard],
+  providers: [LocalStorageService, AuthGuard, BookServiceService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

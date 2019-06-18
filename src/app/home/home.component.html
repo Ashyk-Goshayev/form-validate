@@ -1,9 +1,12 @@
 <div class="header">
     <div class="logo">
         <h1 routerLink='/'>My-Form</h1>
+        <button class="frst" ></button>
+        <button class="last" ></button>
+
     </div>
     <div *ngIf="welcomePage(); else template" class="btns">
-        <a routerLink='signIn' id="sign">Sign In</a>
+        <a routerLink='signIn' id="sign">Sign in</a>
         <a routerLink='register' id="reg" >Register</a>
     </div>
     <ng-template #template>
@@ -12,6 +15,7 @@
             <a class="log" (click)='logOut()'>Log out</a>
         </div>
     </ng-template>
+    
 </div>
 
 

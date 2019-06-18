@@ -3,7 +3,7 @@
     box-sizing: border-box;
     height: 350px;
     position: absolute;
-    background: none;
+    background: rgba(0, 0, 0, 0.295);
     left: 50%;
     top: 50%;
     transform: translate(-50%, -70%);
@@ -76,10 +76,11 @@
             .pass {
                 input{
                     width: 90%;
+                    color: white;
                 }
                 i {
                     position: absolute;
-                    color: rgba(185, 108, 36, 0.774);
+                    color: #263238;
                     cursor: pointer;
                     font-size: 17px;
                     right: 15%;
@@ -95,6 +96,7 @@
                 font-size: 18px;
                 height: 40px;
                 width: 80%;
+                color: white;
                 border: none;
                 outline: none;
                 border-radius: 10px;

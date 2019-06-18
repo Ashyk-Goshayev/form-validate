@@ -1,0 +1,51 @@
+.cart {
+    width: 70%;
+    margin-top: 20px;
+    height: 90vh;
+    background: white;
+    position: relative;
+    left: 50%;
+    transform: translate(-50%);
+    .example-container {
+        height: 100%;
+        overflow: auto;
+      }
+      
+      table {
+        width: 100%;
+    
+      }
+      img{
+          height: 100px;
+      }
+      button {
+          color: white;
+      }
+      .remove{
+          transition: 0.6s;
+          background: #ef5350;
+          border: none;
+          padding: 10px;
+          cursor: pointer;
+          outline: none;
+      }
+      .buy {
+          transition: 0.6s;
+          background: #8BC34A;
+      }
+      .buy:hover {
+          background: #AED581;
+      }
+      .remove:hover{
+          background: red;
+      }
+      tr.mat-footer-row {
+        font-weight: bold;
+
+      }
+     
+      .mat-table-sticky {
+        border-top: 1px solid #e0e0e0;
+      }
+    
+}

@@ -17,6 +17,8 @@ export class HomeComponent implements OnInit {
   logOut(){
     this.localStore.hide = true
     this.localStore.isCorrectSign = false
+    this.localStore.currentUser = ''
+    this.welcomePage()
     return this.route.navigate(['/'])
   }
   // logOut(){

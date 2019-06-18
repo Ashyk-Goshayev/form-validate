@@ -15,16 +15,18 @@ export class RegisterComponent implements OnInit {
   isTrue : boolean = false
   isVisible : string = 'password'
   isSwitched : boolean = true
-  constructor(private formBuilder: FormBuilder, private localStore : LocalStorageService) { 
+  constructor(private formBuilder: FormBuilder, private localStore : LocalStorageService, private router : Router) { 
   this.createForm();
   this.user = [];
   }
  
-  // welcomePage(){
-  //   return this.localStore.isReg
-  // }
+  
   onsubmit(){
     this.localStore.onsubmitReg(this.exampleForm.value)
+    if(this.localStore.isSuccess){
+      this.router.navigate(['signIn'])
+    }
+    
   }
   createForm() {
     this.exampleForm = this.formBuilder.group({

@@ -31,10 +31,6 @@ export class SignInComponent implements OnInit {
     }
   }
 
-  // welcomePage(){
-  //   return this.localStore.isCorrectData
-  // }
-
   onsubmit(){
     this.localStore.onsubmitSign(this.exampleForm.value)
     if(this.localStore.isCorrectSign){

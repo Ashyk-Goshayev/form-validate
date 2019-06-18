@@ -1,19 +1,23 @@
+
 <div class="main">
-    <mat-grid-list cols="4" rowHeight="1:1">
+    <a routerLink='/cart'>{{cartLength | currency: 'USD'}}<i class="fas fa-cart-plus"></i></a>
+    <div class="leftSide">
+      
+    </div>
+    <mat-grid-list cols="5" rowHeight="1:1.4">
         <mat-grid-tile *ngFor="let tile of tiles | 
         slice: lowValue : highValue">
-          <div class="data">
-            <img src="{{tile.image}}">
-            <span>{{tile.name}}</span>
-            <button type="button" >{{tile.price}}</button>
+          <div  class="data" >
+            <img src="{{tile.image}}" alt="no photo">
+            <span  >{{tile.name}}</span>
+            <h2>{{tile.price}}</h2>
+            <button (click)=addToCart(tile) >Add Cart</button>
           </div>
         </mat-grid-tile>
     </mat-grid-list>
     <mat-paginator [length]="tiles.length"
     [pageSize]="pageSize"
     [pageSizeOptions]="pageSizeOptions"
-    (page)="pageEvent = getPaginatorData($event)"
-    (changes)="doSomething($event)"
-    >
+    (page)="pageEvent = getPaginatorData($event)">
     </mat-paginator>
 </div>
