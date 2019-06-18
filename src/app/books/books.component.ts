@@ -42,7 +42,8 @@ export class BooksComponent implements OnInit {
   this.bookInfo()
   this.tiles = this.allTiles;
   this.localStore.getCart()
-
+  this.service.announceMission.subscribe(myBook=>
+    this.transactions.push(myBook))
   }
   ex : number[] = []
   example : Price[]
@@ -93,8 +94,7 @@ export class BooksComponent implements OnInit {
   ngOnInit() {
    fetch(' http://localhost:3000/cart').then(elem=> elem.json()).then(item=> this.transactions = item.reverse())
   }
-  getTotalCost() {
-  }
+  
   getPaginatorData(event){
     console.log(event);
     if(event.pageIndex === this.pageIndex + 1){
