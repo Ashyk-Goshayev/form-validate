@@ -1,5 +1,6 @@
 
 <div class="cart">
+    <i (click)='goBack()' class="fas fa-long-arrow-alt-left"></i>
     <div class="example-container mat-elevation-z8">
         <table mat-table [dataSource]="transactions">
           <!-- Item Column -->
@@ -27,7 +28,7 @@
               </ng-container>
               <ng-container matColumnDef="buttons">
                   <th mat-header-cell *matHeaderCellDef> Actions </th>
-                  <td mat-cell *matCellDef="let transaction"> <button (click)='remove(transaction)' class="remove">Remove</button>  </td>
+                  <td mat-cell *matCellDef="let transaction; let i = index"> <button (click)='remove(transaction, i)' class="remove">Remove</button>  </td>
                   <td mat-footer-cell *matFooterCellDef><button class="buy" mat-button>Buy all</button> </td>
                 </ng-container>
           <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>

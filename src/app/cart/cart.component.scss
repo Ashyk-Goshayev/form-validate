@@ -47,5 +47,11 @@
       .mat-table-sticky {
         border-top: 1px solid #e0e0e0;
       }
-    
+    .fa-long-arrow-alt-left {
+      position: absolute;
+      font-size: 50px;
+      cursor: pointer;
+      color: white;
+      left: -4%;
+    }
 }

@@ -55,6 +55,10 @@ import { BooksComponent } from './books/books.component';
 import { AdminComponent } from './admin/admin.component';
 import { AuthGuard } from './auth.guard';
 import { CartComponent } from './cart/cart.component';
+import { HttpClientModule } from '@angular/common/http';
+import { CartAsideComponent } from './cart-aside/cart-aside.component';
+import { CartIconComponent } from './cart-icon/cart-icon.component';
+import { NewBookComponent } from './new-book/new-book.component';
 
 const routes: Routes = [];
 
@@ -66,7 +70,10 @@ const routes: Routes = [];
     RegisterComponent,
     BooksComponent,
     AdminComponent,
-    CartComponent
+    CartComponent,
+    CartAsideComponent,
+    CartIconComponent,
+    NewBookComponent
 
   ],
   imports: [
@@ -108,6 +115,7 @@ const routes: Routes = [];
   MatToolbarModule,
   MatTooltipModule,
   MatTreeModule,
+  HttpClientModule,
     ReactiveFormsModule,
     StorageServiceModule,
     MatGridListModule,

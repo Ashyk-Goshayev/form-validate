@@ -45,6 +45,9 @@ h2 {
         flex-direction: column;
         top: 20%;
         text-align: center;
+        i {
+            margin-right: 10px;
+        }
         & a {
             border: 1px solid;
             padding: 10px;

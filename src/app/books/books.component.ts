@@ -2,11 +2,14 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import {PageEvent} from '@angular/material/paginator';
 import { LocalStorageService } from '../local-storage.service'
 import { Router, ActivatedRoute } from '@angular/router'
-import { Observable } from 'rxjs'
+import { Observable, Subject, from, of } from 'rxjs'
 import { BookServiceService } from '../book-service.service'
 import {MatPaginator} from '@angular/material/paginator';
 import {MatTableDataSource} from '@angular/material/table';
-
+import { map } from 'rxjs/operators';
+import {HttpClient} from '@angular/common/http';
+import { Book } from '../book-service.service'
+import { environment } from '../../environments/environment' 
 export interface Tile {
   name: string,
   about: string,
@@ -34,21 +37,20 @@ export class BooksComponent implements OnInit {
   pageIndex:number = 0;
   lowValue:number = 0;
   highValue:number = 10; 
-  cartLength : number;
+  cartLength : number = 0
   pageEvent: PageEvent;
   showContent : Observable<Tile>
-
+  myCart : object[] = []
+  books : Book[]
   constructor(private localStore : LocalStorageService, private router : Router, private service : BookServiceService) {
   this.bookInfo()
   this.tiles = this.allTiles;
-  this.localStore.getCart()
-  this.service.announceMission.subscribe(myBook=>
-    this.transactions.push(myBook))
+
   }
   ex : number[] = []
-  example : Price[]
+
   bookInfo(){
-    let response = fetch(' http://localhost:3000/books')
+    let response = fetch(`${environment.apiUrl}books`)
       .then( prom => prom.json())
         .then( users => {
           // users.map(item=> item.price = item.price + '$')
@@ -56,43 +58,26 @@ export class BooksComponent implements OnInit {
         })
     
   }
-  async addToCart(cart){
-    let i = 0
-    this.ex.length = 0 
-    let response = await fetch(' http://localhost:3000/cart',{
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body : JSON.stringify({name : cart.name, about: cart.about, price: cart.price, image: cart.image,  id: i++})
-    })
-    
-    if(response.ok){
-      this.localStore.getCart().then(el=> el.json()).then(data=> {
+  private sendBook: Subject<Book> = new Subject<Book>();
+  abservableBook = this.sendBook.asObservable();
+  
 
-        if(data){
-          data.map(item=> this.ex.push(item.price))
-          if(this.ex.length != 0){
-            this.cartLength = this.ex.reduce((a,b)=> a + b)
-          }
-        }
-
-      } );
-      
-      
+  addToCart(cart){
+    this.service.sendBookInfo(cart)
+    this.ex.push(cart);
+    localStorage.cart = JSON.stringify(this.ex)
   }
-}
 
   setPageSizeOptions(setPageSizeOptionsInput: string) {
     alert(setPageSizeOptionsInput);
     this.pageSizeOptions = setPageSizeOptionsInput.split(',').map(str => +str);
   }
-  displayedColumns = ['item', 'cost'];
-  transactions: Transaction[] = [
-    
-  ];
+  navigate(event) {
+    this.service.openCurrentBook(event)
+    this.router.navigate(['bookInfo', event.id])
+  }
   ngOnInit() {
-   fetch(' http://localhost:3000/cart').then(elem=> elem.json()).then(item=> this.transactions = item.reverse())
+    
   }
   
   getPaginatorData(event){
@@ -110,7 +95,3 @@ export class BooksComponent implements OnInit {
 
 }
 
-export interface Transaction {
-  image: string;
-  name: string;
-}

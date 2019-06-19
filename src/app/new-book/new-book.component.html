@@ -1,3 +1,16 @@
-<p>
-  new-book works!
-</p>
+<div class="bookInfo">
+  <i (click)='goBack()' class="fas fa-long-arrow-alt-left"></i>
+  <div class="content">
+      <div class="img">
+          <img src="{{book.image}}" alt="">
+        </div>
+        <div class="info">
+          <div class="name">
+              <h2>{{ book.name }}</h2>
+              <i>author</i>
+          </div>
+          <span>{{ book.about }}</span>
+          <button  >buy {{ book.price }}</button>
+        </div>
+  </div>
+</div>

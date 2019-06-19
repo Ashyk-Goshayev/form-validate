@@ -7,6 +7,7 @@ import { BooksComponent } from './books/books.component';
 import { AdminComponent } from './admin/admin.component';
 import { AuthGuard } from './auth.guard';
 import { CartComponent } from './cart/cart.component';
+import { NewBookComponent } from './new-book/new-book.component';
 
 const routes: Routes = [
   {path: 'signIn', component: SignInComponent},
@@ -16,7 +17,8 @@ const routes: Routes = [
   canActivate: [AuthGuard],
   runGuardsAndResolvers: 'always'
 },
-  {path: 'cart', component: CartComponent}
+  {path: 'cart', component: CartComponent},
+  {path: 'bookInfo/:id', component: NewBookComponent}
 ];
 
 @NgModule({

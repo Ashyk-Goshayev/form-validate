@@ -3,6 +3,7 @@ import { ToastrService } from 'ngx-toastr';
 import { PeriodicElement } from './admin/admin.component'
 import { Router } from '@angular/router'
 import { __param } from 'tslib';
+import { environment } from '../environments/environment' 
 export interface Admin {
   email: string;
   password: string;
@@ -31,7 +32,6 @@ export interface List {
 })
 export class LocalStorageService {
   arrayOfUsers : object[]
-  currentUser : string = '';
   admin : Admin = {
     email : 'admin@gmail.com',
     password : 'admin'
@@ -46,8 +46,8 @@ export class LocalStorageService {
   constructor(private toastr: ToastrService, private router : Router) {
     this.arrayOfUsers = []
     this.getData()
-    if(this.currentUser !== ''){
-      if(this.currentUser === 'admin@gmail.com'){
+    if(localStorage.currentUser != ''){
+      if(localStorage.currentUser === 'admin@gmail.com'){
         this.hide = false
         this.isAdminLogin = true
       }else{
@@ -55,19 +55,11 @@ export class LocalStorageService {
         this.hide = false
       }
     }
-    // if(localStorage.current != null){
-    //   var lastUser = JSON.parse(localStorage.current)
-    //   this.currentUser = lastUser.email
-    //   this.isCorrectSign = true
-    //   this.hide = false
-    // }
     
   }
-  getCart(){
-    return fetch(' http://localhost:3000/cart');
-  }
+
   getData(){
-    fetch(' http://localhost:3000/users')
+    fetch(`${environment.apiUrl}users`)
     .then( prom => prom.json())
       .then( users => {
         this.user_2 = users
@@ -84,7 +76,7 @@ export class LocalStorageService {
     }
     else if(testEmail.test(formInput.email) && testPass.test(formInput.password)){
       if(formInput.password === formInput.passwordRepeat){
-        fetch('http://localhost:3000/users', {
+        fetch(`${environment.apiUrl}users`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -114,7 +106,8 @@ export class LocalStorageService {
         user = this.user_2.filter(elem=>{ return elem.email == inputForm.email ? elem.password == inputForm.password : null})
         
         if(user.length >= 1){
-          this.currentUser = user[0].email
+          localStorage.currentUser = user[0].email
+
           this.isCorrectSign = true
           this.hide = false
           this.toastr.success(`Welcome `, 'SUCCESS')
@@ -126,12 +119,12 @@ export class LocalStorageService {
           this.toastr.error('email or password is wrong', 'WARNING!')
         }
       }else if(this.admin.email === inputForm.email && this.admin.password === inputForm.password){
-      this.currentUser = this.admin.email
-      // this.isCorrectSign = false
-      this.hide = false
-      this.isAdminLogin = true
-      this.toastr.success(`Welcome admin`, 'SUCCESS')
-      }
+        localStorage.currentUser = this.admin.email
+        // this.isCorrectSign = false
+        this.hide = false
+        this.isAdminLogin = true
+        this.toastr.success(`Welcome admin`, 'SUCCESS')
+        }
       
 
     }

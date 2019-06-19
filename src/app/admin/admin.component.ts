@@ -8,6 +8,7 @@ import { FormGroup, FormBuilder, Validators, FormControl} from '@angular/forms';
 import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
 import { Observable } from "rxjs"
+import { environment } from '../../environments/environment' 
 export interface PeriodicElement {
   email: string;
   position: number;
@@ -76,7 +77,8 @@ export class AdminComponent implements OnInit {
         this.selection.clear() :
         this.dataSource.data.forEach(row => this.selection.select(row));
   }
-
+  file : File = null
+  image: any
   /** The label for the checkbox on the passed row */
   checkboxLabel(row?: PeriodicElement): string {
     if (!row) {
@@ -87,13 +89,14 @@ export class AdminComponent implements OnInit {
   }
   addBook(){
     if(this.exampleForm.value.name !== null && this.exampleForm.value.price !== null){
-      fetch(`http://localhost:3000/books`, {
+      fetch(`${environment.apiUrl}books`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
-      body : JSON.stringify(this.exampleForm.value)
+      body : JSON.stringify(Object.assign(this.exampleForm.value, { image: this.image} ))
       })
+      console.log(this.image)
       this.uploaded = 'flex'
       this.opacity = '0'
       this.openBook()
@@ -103,32 +106,30 @@ export class AdminComponent implements OnInit {
     }
     
   }
-  file : File = null
+
   uploaded : string;
   opacity : string;
   getURL(img){
-    const fd = new FormData()
-    
     var reader = new FileReader()
-    reader.onloadend = ()=>{
-      this.exampleForm.value.image = reader.result;
-      this.photoOfBook = reader.result;
-      this.uploaded = 'none';
-      this.opacity = '1';
-    };
     this.file = <File>img.files[0]
-    // fd.append('image', this.file, this.file.name)
     if(this.file){
       reader.readAsDataURL(this.file)
     }else{
-      img.value = "";
+      alert('no')
     }
+    reader.onload= ()=>{
+      this.image = reader.result
+      this.photoOfBook = reader.result;
+      this.uploaded = 'none';
+      this.opacity = '1';
+      this.toastr.success('Loaded')
+    };
   }
   async deleteAllSelected(){
     let users = this.selection.selected
     let response = null;
     for (let u of users) {
-      response = await fetch(`http://localhost:3000/users/${u.position}`, {
+      response = await fetch(`${environment.apiUrl}users/${u.position}`, {
         method: 'DELETE'
       });
     }
@@ -144,7 +145,7 @@ export class AdminComponent implements OnInit {
   async deleteRow(){
     let user;
     user = this.deleteUser
-    let response  = await fetch(`http://localhost:3000/users/${user.position}`, {
+    let response  = await fetch(`${environment.apiUrl}users/${user.position}`, {
               method: 'DELETE'
     });
     
@@ -192,7 +193,7 @@ export class AdminComponent implements OnInit {
     }
   }
   confirm(em, pass){
-    fetch(`http://localhost:3000/users/${this.position}`, {
+    fetch(`${environment.apiUrl}users/${this.position}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json'
@@ -204,7 +205,7 @@ export class AdminComponent implements OnInit {
   async openSnackBar(email : string, password : string){
     let isSameUser = this.localStore.user_2.filter(item=> item.email === email)
     if(isSameUser.length === 0){
-      let result = await fetch('http://localhost:3000/users', {
+      let result = await fetch(`${environment.apiUrl}users`, {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json'
@@ -241,8 +242,7 @@ export class AdminComponent implements OnInit {
     this.exampleForm = this.formBuilder.group({
       name : new FormControl,
       about: new FormControl,
-      price: new FormControl,
-      image: new FormControl
+      price: new FormControl
     });
   }
   
@@ -269,7 +269,7 @@ export class AdminComponent implements OnInit {
     // }
     // this.dataSource.data = ELEMENT_DATA;
     
-     fetch(' http://localhost:3000/users')
+     fetch(`${environment.apiUrl}users`)
       .then( prom => prom.json())
         .then( users => {
             users.map(item=> ELEMENT_DATA.push({email : item.email, delete: "delete", edit: "edit",password : item.password, position: item.id  }))
