@@ -10,6 +10,7 @@ export class CartIconComponent implements OnInit {
   price: number = 0
   ngOnInit() {
     this.service.abservableBook.subscribe(x=> this.price += x.price)
+    this.service.sendPrice.subscribe(x=> this.price += x)
   }
   showPrice() {
     console.log(this.price)

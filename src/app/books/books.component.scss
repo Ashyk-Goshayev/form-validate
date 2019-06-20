@@ -74,20 +74,6 @@ mat-paginator {
     height: 91.5vh;
     left: 50%;
     transform: translate(-50%);
-    .form-inline{
-        position: absolute;
-        top: -7%;
-        left: 50%;
-        
-            input{
-                background: none;
-                border: none;
-                border-bottom: 1px solid #26A69A;
-                outline: none;
-                height: 20px;
-                color: #FF6F00;
-            }
-        
-    }
+    
     
 }

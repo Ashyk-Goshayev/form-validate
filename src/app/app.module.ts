@@ -59,6 +59,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { CartAsideComponent } from './cart-aside/cart-aside.component';
 import { CartIconComponent } from './cart-icon/cart-icon.component';
 import { NewBookComponent } from './new-book/new-book.component';
+import { SearchComponent } from './search/search.component';
+import { UserComponent } from './user/user.component';
 
 const routes: Routes = [];
 
@@ -73,7 +75,9 @@ const routes: Routes = [];
     CartComponent,
     CartAsideComponent,
     CartIconComponent,
-    NewBookComponent
+    NewBookComponent,
+    SearchComponent,
+    UserComponent
 
   ],
   imports: [

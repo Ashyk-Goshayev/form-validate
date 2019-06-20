@@ -12,8 +12,10 @@ export class BookServiceService {
   abservableBook = this.sendBook.asObservable();
   private openBook: Subject<Book> = new Subject<Book>();
   openObservableBook = this.openBook.asObservable();
+  private price: Subject<number> = new Subject<number>();
+  sendPrice = this.price.asObservable();
   constructor(private http: HttpClient) {
-
+  
   }
   myCart : object[] = []
   getBooks(books : Book[]){
@@ -26,6 +28,9 @@ export class BookServiceService {
   }
   openCurrentBook(book: Book) {
     this.openBook.next(book)
+  }
+  sendBookPrice(price: number) {
+    this.price.next(price);
   }
 }
 export interface Book {

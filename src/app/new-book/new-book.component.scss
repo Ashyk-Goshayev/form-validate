@@ -32,7 +32,7 @@
             }
         }
         .info {
-            border: 1px solid;
+            
             display: flex;
             flex-direction: column;
             justify-content: space-around;
@@ -40,14 +40,21 @@
             height: 80%;
             width: 500px;
             button {
-                width: 50px;
-                right: 0%;
+                padding: 10px 15px;
+                outline: none;
+                color: white;
+                background: #7E57C2;
+                border: none;
+                cursor: pointer;
+                right: 10%;
                 position: absolute;
-                bottom: 0%;
+                bottom: -10%;
             }
             span {
-                display: inline;
-                text-align: center;
+                text-indent: 50px;
+                text-align: justify;
+                line-height: 24px;
+                letter-spacing: 1px;
             }
         }
     }

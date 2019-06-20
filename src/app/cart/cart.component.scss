@@ -1,3 +1,49 @@
+.layer {
+  width: 100%;
+  background: rgba(0, 0, 0, 0.452);
+  height: 110vh;
+  position: absolute;
+  top: -10%;
+  z-index: 5;
+  display: none;
+}
+// .x {
+//   position: absolute;
+//   font-size: 30px;
+//   left: 55%;
+//   top: 25%;
+//   display: none;
+//   z-index: 6;
+//   cursor: pointer;
+//   color: rgb(168, 57, 57);
+//   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+// }
+.pop-up {
+  position: absolute;
+  transform: translate(-50%);
+  height: 150px;;
+  left: 50%;
+  z-index: 200;
+  width: 200px;
+  top: 30%;
+  display: none;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  background: white;
+  .btn {
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    button {
+      border: 1px solid black;
+      color: black;
+      
+      padding: 5px 10px;
+    }
+  }
+  
+}
 .cart {
     width: 70%;
     margin-top: 20px;
@@ -6,6 +52,8 @@
     position: relative;
     left: 50%;
     transform: translate(-50%);
+    
+    
     .example-container {
         height: 100%;
         overflow: auto;

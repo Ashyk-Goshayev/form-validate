@@ -4,6 +4,7 @@ import { Book } from '../book-service.service';
 import { Subscription } from 'rxjs'
 import { ActivatedRoute, Router } from '@angular/router';
 import { environment } from '../../environments/environment' 
+import { Location } from '@angular/common';
 @Component({
   selector: 'app-new-book',
   templateUrl: './new-book.component.html',
@@ -11,7 +12,7 @@ import { environment } from '../../environments/environment'
 })
 export class NewBookComponent implements OnInit {
   private subsc : Subscription
-  constructor(private service : BookServiceService, private activroute: ActivatedRoute, private router : Router) { }
+  constructor(private service : BookServiceService, private activroute: ActivatedRoute, private router : Router, private _location : Location) { }
   book : any
   id: number
   ngOnInit() {
@@ -20,7 +21,13 @@ export class NewBookComponent implements OnInit {
       fetch(`${environment.apiUrl}books/${this.id}`).then(item=> item.json()).then(item=> this.book = item)
     })
   }
+  buy(item, obj) {
+    let cart = JSON.parse(localStorage.cart)
+    cart.push(obj)
+    localStorage.cart = JSON.stringify(cart)
+    this.service.sendBookPrice(item)
+  }
   goBack() {
-    return this.router.navigate(['books'])
+    return this._location.back()
   }
 }

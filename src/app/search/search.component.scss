@@ -1,0 +1,18 @@
+.form-inline{
+    position: absolute;
+    right: 50%;
+        input{
+            background: none;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            border: 1px solid;
+            border-radius: 10px;
+            margin-top: 10px;
+            outline: none;
+            height: 25px;
+            color: #FF6F00;
+            &::placeholder {
+                color: #FF6F00;
+            }
+        }
+        
+}
