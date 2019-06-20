@@ -37,7 +37,7 @@ export class LocalStorageService {
     password : 'admin'
   }
   user_2 : User[]
-
+  hideCart: boolean = true
   books : Price[]
 
   isCorrectSign : boolean = false // for navigate to books page
@@ -49,10 +49,12 @@ export class LocalStorageService {
     if(localStorage.currentUser != ''){
       if(localStorage.currentUser === 'admin@gmail.com'){
         this.hide = false
+        this.hideCart = false
         this.isAdminLogin = true
       }else{
         this.isCorrectSign = true
         this.hide = false
+        this.hideCart = true
       }
     }
     
@@ -84,6 +86,7 @@ export class LocalStorageService {
           body: JSON.stringify({email: formInput.email, password: formInput.password})
         })
         this.isSuccess = true
+        this.hideCart = true
         this.toastr.success('Registration passed', 'SUCCESS')
       }else{
         this.toastr.error('Passwords do not match', 'WARNING!')
@@ -107,7 +110,7 @@ export class LocalStorageService {
         
         if(user.length >= 1){
           localStorage.currentUser = user[0].email
-
+          this.hideCart = true
           this.isCorrectSign = true
           this.hide = false
           this.toastr.success(`Welcome `, 'SUCCESS')
@@ -120,6 +123,7 @@ export class LocalStorageService {
         }
       }else if(this.admin.email === inputForm.email && this.admin.password === inputForm.password){
         localStorage.currentUser = this.admin.email
+        this.hideCart = false
         // this.isCorrectSign = false
         this.hide = false
         this.isAdminLogin = true

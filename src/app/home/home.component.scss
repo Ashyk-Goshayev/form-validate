@@ -7,6 +7,7 @@
     h1{
         font-size: 50px;
         letter-spacing: 2px;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         color: white;
         animation: 1s ease-out 0s 1 slideInFromLeft;
     }
@@ -24,6 +25,7 @@ h2 {
     position: absolute;
     font-size: 70px;
     left: 30%;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .header {
@@ -35,7 +37,7 @@ h2 {
     transform: translate(-50%);
     display: flex;
     flex-direction: row;
-    border-bottom: 1px solid white;
+    border-bottom: 1px solid #34495e;
     align-items: center;
 
       .head {
@@ -75,6 +77,8 @@ h2 {
           color: white;
           cursor: pointer;
           outline: none;
+          font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+          font-weight: 200;
         }
     }
     .btns {
@@ -83,23 +87,24 @@ h2 {
             border: 1px solid;   
             top: 20%;     
             position: absolute;
+            background: #34495e;
             right: 0%;
             color: white;
             padding: 10px;
-            border-radius: 15px;
+           
             transition: 0.2s;
             border: 1px solid white; 
         }
         a:hover {
-            background: rgb(156, 109, 21);
+            background: #1abc9c;
             border: 1px solid white;
 
         }
         #sign{
-            right: 13%;
+            right: 5.5%;
         }
         #reg{
-            right: 5%;
+            right: 0%;
         }
     }
     

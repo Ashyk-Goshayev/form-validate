@@ -1,8 +1,8 @@
 <div class="btns">
     <div class="userBtn">
-        <i class="far fa-user"></i>
-        <a class="user">User@gmail.com</a>
+        
+        <a class="user" (click)='showLog()' ><i class="far fa-user"></i>{{ user }}</a>
     </div>
     
-    <a class="log" (click)='logOut()'>Log out</a>
+    <a class="log" (click)='logOut()' [ngStyle]="{'display': show}" >Log out</a>
 </div>

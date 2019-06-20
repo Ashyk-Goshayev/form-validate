@@ -1,17 +1,37 @@
 .form-inline{
     position: absolute;
-    right: 50%;
+    right: 100%;
+    border: 1px solid #ffffff;
+    width: 530px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    background: #34495ed3;
+    align-items: center;
+    i {
+        font-size: 16px;
+        padding: 3px;
+        color: rgb(189, 189, 189);
+    }
         input{
             background: none;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            border: 1px solid;
-            border-radius: 10px;
-            margin-top: 10px;
+            border: none;
+            border-radius: 3px;
+            margin-top: 0px;
             outline: none;
-            height: 25px;
-            color: #FF6F00;
+            height: 35px;
+            width: 500px;
+            color: #ffffff;
+            
             &::placeholder {
-                color: #FF6F00;
+                
+                color: #ffffff;
+            }
+        }
+        input:focus {
+            &::placeholder {
+                color: #ffffff;
             }
         }
         

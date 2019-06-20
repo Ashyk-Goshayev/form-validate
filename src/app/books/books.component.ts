@@ -10,6 +10,7 @@ import { map } from 'rxjs/operators';
 import {HttpClient} from '@angular/common/http';
 import { Book } from '../book-service.service'
 import { environment } from '../../environments/environment' 
+import { element } from 'protractor';
 export interface Tile {
   name: string,
   about: string,
@@ -58,12 +59,11 @@ export class BooksComponent implements OnInit {
         })
     
   }
-  private sendBook: Subject<Book> = new Subject<Book>();
-  abservableBook = this.sendBook.asObservable();
   
 
   addToCart(cart){
     this.service.sendBookInfo(cart)
+    this.ex = JSON.parse(localStorage.cart)
     this.ex.push(cart);
     localStorage.cart = JSON.stringify(this.ex)
   }
@@ -77,7 +77,12 @@ export class BooksComponent implements OnInit {
     this.router.navigate(['bookInfo', event.id])
   }
   ngOnInit() {
-    
+    this.service.sendText.subscribe(x=>{
+      fetch(`${environment.apiUrl}books`).then(item=> item.json()).then(element=> this.tiles = element.filter(item=> {
+        return item.name.toLowerCase().indexOf(x) > -1
+                  || item.price == +x;
+      }))
+    })
   }
   
   getPaginatorData(event){

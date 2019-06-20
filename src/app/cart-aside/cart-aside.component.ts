@@ -10,7 +10,8 @@ import {MatTableDataSource} from '@angular/material/table';
 export class CartAsideComponent implements OnInit {
 
   constructor(private service : BookServiceService) { 
-    
+    this.transactions = JSON.parse(localStorage.cart);
+    this.dataSource = new MatTableDataSource<Transaction>(this.transactions);
   }
   displayedColumns = ['image', 'name'];
   transactions: Transaction[] = [];
@@ -19,15 +20,12 @@ export class CartAsideComponent implements OnInit {
 
   ngOnInit() {
     this.service.abservableBook.subscribe(x=> {
-      this.transactions.unshift(x); 
+      
+      this.transactions.unshift(x);
       this.dataSource = new MatTableDataSource<Transaction>(this.transactions);
     });
   }
-  getBook() {
-    // localStorage.cart = JSON.stringify(this.ex)
-    // this.transactions = JSON.parse(localStorage.cart).reverse()
-    // setTimeout(()=> this.transactions.splice(this.transactions.length-1, 1), 1000)
-  }
+ 
 }
 export interface Transaction {
   image: string;

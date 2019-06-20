@@ -7,7 +7,10 @@
 <div class="exit" (click)='editValue(element)' [ngStyle]="{'display': editUser}" >X</div>
 <div class="btns">
   <button (click)='togglePop()'>Add User</button>
+  <button >List Of Books</button>
+  <button >Users</button>
   <button (click)='openBook()' >Add New Book</button>
+  
 </div>
 
 <div class="addBook" [ngStyle]="{'display': newBook}" >
@@ -75,7 +78,38 @@
   </mat-form-field>
   <button mat-button (click)="openSnackBar(email.value, password.value)" type="submit" >Add</button>
 </form>
-<table mat-table [dataSource]="dataSource" class="mat-elevation-z8" class="users" >
+<div class="example-container mat-elevation-z7">
+    <table mat-table class="tab" [dataSource]="transactions">
+      <!-- Item Column -->
+      <ng-container matColumnDef="id">
+        <th mat-header-cell *matHeaderCellDef> Item </th>
+        <td mat-cell *matCellDef="let transaction"> {{transaction.id}} </td>
+        <td mat-footer-cell *matFooterCellDef> Total </td>
+      </ng-container>
+  
+      <!-- Cost Column -->
+      <ng-container matColumnDef="image">
+        <th mat-header-cell *matHeaderCellDef> Cost </th>
+        <td mat-cell *matCellDef="let transaction"> {{transaction.image}} </td>
+        <td mat-footer-cell *matFooterCellDef> {{getTotalCost() | currency}} </td>
+      </ng-container>
+      <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef> Cost </th>
+          <td mat-cell *matCellDef="let transaction"> {{transaction.name}} </td>
+          <td mat-footer-cell *matFooterCellDef> {{getTotalCost() | currency}} </td>
+        </ng-container>
+        <ng-container matColumnDef="buttons">
+            <th mat-header-cell *matHeaderCellDef> Actions </th>
+            <td mat-cell *matCellDef="let transaction"> <button>asd</button> <button>asd</button> </td>
+            <td mat-footer-cell *matFooterCellDef> {{getTotalCost() | currency}} </td>
+          </ng-container>
+  
+      <tr mat-header-row *matHeaderRowDef="displayedColumnss"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumnss;"></tr>
+      <tr mat-footer-row *matFooterRowDef="displayedColumnss; sticky: true"></tr>
+    </table>
+  </div>
+<table mat-table [dataSource]="dataSource" class="mat-elevation-z8"  >
 
   <!-- Checkbox Column -->
   <ng-container matColumnDef="select">
@@ -97,13 +131,13 @@
 
   <!-- Position Column -->
   <ng-container matColumnDef="position">
-    <th mat-header-cell *matHeaderCellDef> No. </th>
+    <th mat-header-cell *matHeaderCellDef (click)='sortByNo()' > No. </th>
     <td mat-cell *matCellDef="let element"> {{element.position}} </td>
   </ng-container>
 
   <!-- Name Column -->
   <ng-container matColumnDef="email">
-    <th mat-header-cell *matHeaderCellDef> Name </th>
+    <th mat-header-cell *matHeaderCellDef  > Name </th>
     <td mat-cell *matCellDef="let element"> {{element.email}} </td>
   </ng-container>
 
@@ -125,9 +159,15 @@
   </ng-container>
 
   <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-  <tr mat-row *matRowDef="let row; columns: displayedColumns;"
+  <tr mat-row *matRowDef="let row ; columns: displayedColumns;"
       (click)="selection.toggle(row)">
   </tr>
 </table>
 
 <button type="submit" class="delAll" [ngStyle]="{'display': deleteAll}" (click)='deleteAllSelected()' >Delete All</button>
+<mat-paginator [length]="dataSource.data.length"
+              [pageSize]="pageSize"
+              [pageSizeOptions]="pageSizeOptions"
+              (page)="pageEvent = getPaginatorData($event)" >
+              
+</mat-paginator>

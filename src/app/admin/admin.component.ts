@@ -9,12 +9,25 @@ import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog
 import { ToastrService } from 'ngx-toastr';
 import { Observable } from "rxjs"
 import { environment } from '../../environments/environment' 
+import { BookServiceService } from '../book-service.service';
+import {PageEvent} from '@angular/material/paginator';
 export interface PeriodicElement {
   email: string;
   position: number;
   password: string;
   delete: string;
   edit: string;
+}
+export interface Transaction {
+ id: number;
+ image: string;
+ name: string;
+}
+export interface Tile {
+  name: string,
+  about: string,
+  price: number,
+  image: string
 }
 
 let ELEMENT_DATA: PeriodicElement[] = []
@@ -58,6 +71,31 @@ export class AdminComponent implements OnInit {
   exampleForm : FormGroup
   deleteAll : string;
   photoOfBook : any;
+
+  pageSize = 3;
+  allTiles : Tile[] = [];
+  tiles : Tile[] = [];
+  pageSizeOptions: number[] = [3];
+  pageIndex:number = 0;
+  lowValue:number = 0;
+  highValue:number = 3; 
+  pageEvent: PageEvent;
+  setPageSizeOptions(setPageSizeOptionsInput: string) {
+    alert(setPageSizeOptionsInput);
+    this.pageSizeOptions = setPageSizeOptionsInput.split(',').map(str => +str);
+  }
+  getPaginatorData(event){
+    console.log(event);
+    if(event.pageIndex === this.pageIndex + 1){
+       this.lowValue = this.lowValue + this.pageSize;
+       this.highValue =  this.highValue + this.pageSize;
+      }
+   else if(event.pageIndex === this.pageIndex - 1){
+      this.lowValue = this.lowValue - this.pageSize;
+      this.highValue =  this.highValue - this.pageSize;
+     }   
+      this.pageIndex = event.pageIndex;
+}
   showSelected(){
     if(this.selection.selected.length > 0){
       this.deleteAll = 'block'
@@ -65,7 +103,13 @@ export class AdminComponent implements OnInit {
       this.deleteAll = 'none'
     }
   }
-  
+  displayedColumnss = ['id', 'image', 'name', 'buttons'];
+  transactions: Transaction[] = [
+    {id:1, image:'asdasd', name: 'sadasd'}
+  ];
+  getTotalCost() {
+    return this.transactions.map(t => t.id).reduce((acc, value) => acc + value, 0);
+  }
   isAllSelected() {
     const numSelected = this.selection.selected.length;
     const numRows = this.dataSource.data.length;
@@ -141,7 +185,36 @@ export class AdminComponent implements OnInit {
       this.dataSource.data = ELEMENT_DATA;
     }
   }
- 
+  isSorted : boolean = true
+
+  sortByNo() {
+    if(this.isSorted){
+      ELEMENT_DATA = ELEMENT_DATA.sort((a, b)=>{
+        if(a.position > b.position) {
+          return -1
+        }else if(a.position < b.position) {
+          return 1
+        }
+        return 0
+      })
+      this.isSorted = false
+      return this.dataSource = new MatTableDataSource<PeriodicElement>(ELEMENT_DATA);
+    }else {
+      ELEMENT_DATA = ELEMENT_DATA.sort((a, b)=>{
+        if(a.position < b.position) {
+          return -1
+        }else if(a.position > b.position) {
+          return 1
+        }
+        return 0
+      })
+      this.isSorted = true
+      return this.dataSource = new MatTableDataSource<PeriodicElement>(ELEMENT_DATA);
+    }
+    
+    
+    
+  }
   async deleteRow(){
     let user;
     user = this.deleteUser
@@ -156,6 +229,7 @@ export class AdminComponent implements OnInit {
         i++
       }
       this.dataSource.data = ELEMENT_DATA;
+      this.openDialog()
     }else{
       alert('not deleted')
     }
@@ -222,12 +296,12 @@ export class AdminComponent implements OnInit {
       
      
   }
-  constructor(private localStore : LocalStorageService, private formBuilder: FormBuilder, private toastr: ToastrService, private router : Router, private location: Location) {
+  constructor(private localStore : LocalStorageService, private formBuilder: FormBuilder, private toastr: ToastrService, private router : Router, private location: Location, private bookService : BookServiceService) {
     this.createForm();
 
   }
   
-  openDialog(row) {
+  openDialog(row = null) {
     this.deleteUser = row
 
     if(this.switchPop){
@@ -276,7 +350,12 @@ export class AdminComponent implements OnInit {
         }).then( () =>
         this.dataSource = new MatTableDataSource<PeriodicElement>(ELEMENT_DATA)
         )
+        this.bookService.sendText.subscribe(x=> {
+          this.dataSource = new MatTableDataSource<PeriodicElement>(ELEMENT_DATA.filter(item=>{
+            return item.email.toLowerCase().indexOf(x) > -1;
+          }))})
     }
+    
   }
   
 

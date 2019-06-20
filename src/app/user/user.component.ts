@@ -8,8 +8,20 @@ import { Router } from '@angular/router';
   styleUrls: ['./user.component.scss']
 })
 export class UserComponent implements OnInit {
-
+  user : string;
+  show : string = 'none';
+  switch : boolean = true;
   constructor(private localStore : LocalStorageService, private route : Router) { }
+  showLog() { 
+    if(this.switch) {
+      this.show = 'block'
+      // setTimeout(()=>this.show = 'none', 1000)
+      this.switch = false;
+    }else {
+      this.show = 'none';
+      this.switch = true
+    }
+  }
   logOut(){
     this.localStore.hide = true
     this.localStore.isCorrectSign = false
@@ -18,6 +30,7 @@ export class UserComponent implements OnInit {
     return this.route.navigate(['/'])
   }
   ngOnInit() {
+    this.user = localStorage.currentUser
   }
 
 }

@@ -7,11 +7,12 @@ import { Router, ActivatedRoute } from '@angular/router'
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit {
-
+  showCart : boolean = true;
   constructor(private localStore : LocalStorageService, private route : Router) { 
-    
+  
   }
   welcomePage(){
+    this.showCart = this.localStore.hideCart
     return this.localStore.hide
   }
   

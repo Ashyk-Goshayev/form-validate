@@ -4,6 +4,7 @@ import {MatTableDataSource} from '@angular/material/table';
 import { Router } from '@angular/router';
 import { BookServiceService } from '../book-service.service';
 import { Location } from '@angular/common';
+
 @Component({
   selector: 'app-cart',
   templateUrl: './cart.component.html',
@@ -14,20 +15,31 @@ import { Location } from '@angular/common';
 
 export class CartComponent implements OnInit {
   displayedColumns = ['id', 'image', 'name', 'price', 'buttons'];
-  transactions: Transaction[]
+  transactions: Transaction[] = []
+  datasource = new MatTableDataSource<Transaction>()
   constructor(private service: LocalStorageService, private router: Router, private bookService : BookServiceService, private _location : Location ){
+    this.datasource = JSON.parse(localStorage.cart)
     this.transactions = JSON.parse(localStorage.cart)
    }
   popUpForRemove : string = 'none'
   switch : boolean = true
   index : number;
+  bookPrice : Transaction;
   ngOnInit() {
-  }
+    this.bookService.sendText.subscribe(x=> {
+      this.datasource = new MatTableDataSource<Transaction>(this.transactions.filter(item=>{
+        return item.name.toLowerCase().indexOf(x) > -1
+        || item.price == +x;
+      }))})
+  
+}
   getTotalCost() {
     return this.transactions.map(t => t.price).reduce((acc, value) => acc + value, 0);
   }
-  showPop(path = null){
+  showPop(element = null, path = null){
     this.index = path
+    this.bookPrice = element
+    console.log(element)
     if(this.switch) {
       this.popUpForRemove = 'flex';
       this.switch = false
@@ -41,6 +53,8 @@ export class CartComponent implements OnInit {
     deleteRow.splice(this.index, 1)
     localStorage.cart = JSON.stringify(deleteRow)
     this.transactions = deleteRow
+    this.datasource = new MatTableDataSource<Transaction>(this.transactions)
+    this.bookService.minusPriceMethod(this.bookPrice.price)
     this.showPop()
   }
   goBack() {

@@ -6,14 +6,17 @@ import { BookServiceService } from '../book-service.service'
   styleUrls: ['./cart-icon.component.scss']
 })
 export class CartIconComponent implements OnInit {
-  constructor(private service: BookServiceService) { }
   price: number = 0
+  constructor(private service: BookServiceService) { 
+    let arrayofPrice = JSON.parse(localStorage.cart)
+    arrayofPrice= arrayofPrice.map(item=>{return item.price})
+    this.price = arrayofPrice.reduce((a,b)=> a+ b)
+  }
+  
   ngOnInit() {
     this.service.abservableBook.subscribe(x=> this.price += x.price)
     this.service.sendPrice.subscribe(x=> this.price += x)
+    this.service.sendMinusPrice.subscribe(x=> this.price -= x)
   }
-  showPrice() {
-    console.log(this.price)
-  }
-
+  
 }
