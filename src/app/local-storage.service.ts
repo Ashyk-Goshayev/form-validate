@@ -60,84 +60,84 @@ export class LocalStorageService {
     
   }
 
-  getData(){
-    fetch(`${environment.apiUrl}users`)
-    .then( prom => prom.json())
-      .then( users => {
-        this.user_2 = users
-      })
+  async getData(){
+    return fetch(`${environment.apiUrl}users`);
+    
 
   }
-  isSuccess : boolean = false
-  onsubmitReg(formInput : {email : string, password : string, passwordRepeat : string}){
-    var testEmail = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    var testPass = /[a-zA-Z0-9]/g;
-    let isSameUser = this.user_2.filter(item=> item.email === formInput.email)
-    if(isSameUser.length >= 1){
-      this.toastr.error('User exist', 'WARNING!')
-    }
-    else if(testEmail.test(formInput.email) && testPass.test(formInput.password)){
-      if(formInput.password === formInput.passwordRepeat){
-        fetch(`${environment.apiUrl}users`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({email: formInput.email, password: formInput.password})
-        })
-        this.isSuccess = true
-        this.hideCart = true
-        this.toastr.success('Registration passed', 'SUCCESS')
-      }else{
-        this.toastr.error('Passwords do not match', 'WARNING!')
+  isSuccess : boolean = false;
+  async onsubmitReg(formInput : {email : string, password : string, passwordRepeat : string}, img: any){
+    return this.getData().then( prom => prom.json())
+    .then( users => {
+      users = users;
+      var testEmail = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+      var testPass = /[a-zA-Z0-9]/g;
+      let isSameUser = users.filter(item=> item.email === formInput.email)
+      if(isSameUser.length >= 1){
+        return this.toastr.error('User exist', 'WARNING!')
       }
-    }else{
-        this.toastr.error('email should be like example@gmail.com', 'WARNING!')
-      }
-    }
-  
-
-  onsubmitSign(inputForm : {email : string, password : string}){
-    this.getData()
-    if(this.user_2 != null || this.admin != null){
-      if(this.user_2 != null && this.admin.email !== inputForm.email || this.admin.password !== inputForm.password){
-        let user ;
-  
+      else if(testEmail.test(formInput.email) && testPass.test(formInput.password)){
+        if(formInput.password === formInput.passwordRepeat){
+          fetch(`${environment.apiUrl}users`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({email: formInput.email, password: formInput.password, image: img})
+          }).then( ()=>{
+            this.isSuccess = true;
+            this.hideCart = true;
+            this.toastr.success('Registration passed', 'SUCCESS')
+          } )
           
-        
-        // var isAdmin = JSON.parse(localStorage.adminInfo)
-        user = this.user_2.filter(elem=>{ return elem.email == inputForm.email ? elem.password == inputForm.password : null})
-        
+        }else{
+
+          this.toastr.error('Passwords do not match', 'WARNING!')
+        }
+      }else{
+
+          this.toastr.error('email should be like example@gmail.com', 'WARNING!')
+        }
+
+    });
+
+
+
+    
+    }
+  
+  id : number;
+  onsubmitSign(inputForm : {email : string, password : string}){
+  return this.getData().then( prom => prom.json())
+  .then( users => {
+    users = users;
+    if(users != null || this.admin != null){
+      if(users != null && this.admin.email !== inputForm.email || this.admin.password !== inputForm.password){
+        let user ;
+        user = users.filter(elem=>{ return elem.email == inputForm.email ? elem.password == inputForm.password : null})       
         if(user.length >= 1){
-          localStorage.currentUser = user[0].email
+          localStorage.currentUser = JSON.stringify(user)
           this.hideCart = true
           this.isCorrectSign = true
           this.hide = false
           this.toastr.success(`Welcome `, 'SUCCESS')
-          // this.isCorrectData = false;
-          // this.isLogin = true
         }else{
-          // this.isClient = false
-          // this.isCorrectSign = false
           this.toastr.error('email or password is wrong', 'WARNING!')
         }
       }else if(this.admin.email === inputForm.email && this.admin.password === inputForm.password){
-        localStorage.currentUser = this.admin.email
+        localStorage.currentUser = JSON.stringify([{email: this.admin.email}])
         this.hideCart = false
-        // this.isCorrectSign = false
         this.hide = false
         this.isAdminLogin = true
         this.toastr.success(`Welcome admin`, 'SUCCESS')
         }
-      
-
     }
     else {
       this.toastr.error('you dont have accaunt', 'WARNING!')
     }    
+  })
+  
   }
-  
-  
 }
 
 

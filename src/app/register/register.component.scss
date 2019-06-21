@@ -81,11 +81,34 @@ h1 {
             position: relative;
             
             .logo{
-                i{
-                    font-size: 40px;
-                    color: rgba(255, 255, 255, 0.808);
-                    cursor: pointer;
+                input {
+                    position: absolute;
+                    border: 1px solid;
+                    width: 70px;
+                    height: 70px;
+                    border-radius: 50%;
+                    left: 50%;
+                    transform: translate(-50%);
+                    opacity: 0;
+                    z-index: 5;
                 }
+                .log {
+
+                    width: 70px;
+                    height: 70px;
+                    border: 1px solid white;
+                    border-radius: 50%;
+                    left: 50%;
+                    transform: translate(-50%);
+                    position: relative;
+                    img {
+                        height: 70px;
+                        width: 70px;
+                        border-radius: 50%;
+                    }
+
+                }
+                
             }
             .pass {
                 input{

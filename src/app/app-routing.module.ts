@@ -8,6 +8,7 @@ import { AdminComponent } from './admin/admin.component';
 import { AuthGuard } from './auth.guard';
 import { CartComponent } from './cart/cart.component';
 import { NewBookComponent } from './new-book/new-book.component';
+import { ProfileComponent } from './profile/profile.component';
 
 const routes: Routes = [
   {path: 'signIn', component: SignInComponent},
@@ -18,7 +19,8 @@ const routes: Routes = [
   runGuardsAndResolvers: 'always'
 },
   {path: 'cart', component: CartComponent},
-  {path: 'bookInfo/:id', component: NewBookComponent}
+  {path: 'bookInfo/:id', component: NewBookComponent},
+  {path: 'profile', component: ProfileComponent}
 ];
 
 @NgModule({

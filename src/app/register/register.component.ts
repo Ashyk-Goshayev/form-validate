@@ -19,12 +19,24 @@ export class RegisterComponent implements OnInit {
   this.createForm();
   this.user = [];
   }
- 
-  
+  file : File = null;
+  image : any;
+  getURL(img){
+    var reader = new FileReader()
+    this.file = <File>img.files[0]
+    if(this.file){
+      reader.readAsDataURL(this.file)
+    }else{
+      alert('no')
+    }
+    reader.onload= ()=>{
+      this.image = reader.result
+    };
+  }
   onsubmit(){
-    this.localStore.onsubmitReg(this.exampleForm.value)
+    this.localStore.onsubmitReg(this.exampleForm.value, this.image)
     if(this.localStore.isSuccess){
-      this.router.navigate(['signIn'])
+      return this.router.navigate(['signIn'])
     }
     
   }

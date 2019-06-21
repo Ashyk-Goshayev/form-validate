@@ -1,0 +1,35 @@
+<div class="popUp" [ngStyle]="{'display': showEdit}" >
+  <form [formGroup]='editForm' >
+    <div class="file" >
+      <input type="file" accept="image/*" (change)='getURL($event.target)'>
+      <img src="{{img}}" alt="">
+    </div>
+      <input formControlName="email" type="text" placeholder="email">
+     <input formControlName="password" type="text" placeholder="password">
+      <div>
+          <button (click)='editPopUp()' >Cancel</button>
+          <button (click)='confirm()' >Confirm</button>
+      </div>
+  </form>
+</div>
+<div class="layer" [ngStyle]="{'display': showEdit}" ></div>
+<div class="profile">
+  <i (click)='goBack()' class="fas fa-long-arrow-alt-left"></i>
+  <div class="profile-card">
+      <div class="logo">
+          <ng-container *ngIf="showImg; else elseTemplate">
+              <i class="fas fa-user-tie"></i>
+          </ng-container>
+          <ng-template #elseTemplate>
+              <img src="{{image}}" alt="">
+          </ng-template>   
+      </div>
+      <div class="info">
+          <div class="btn">
+              <h1>{{name}}<i (click)='editPopUp()' class="fas fa-user-edit"></i></h1>
+              
+          </div>
+          <span>{{email}}</span>
+      </div>
+  </div>
+</div>

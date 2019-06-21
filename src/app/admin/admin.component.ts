@@ -11,12 +11,14 @@ import { Observable } from "rxjs"
 import { environment } from '../../environments/environment' 
 import { BookServiceService } from '../book-service.service';
 import {PageEvent} from '@angular/material/paginator';
+import { element } from 'protractor';
 export interface PeriodicElement {
   email: string;
   position: number;
   password: string;
   delete: string;
   edit: string;
+  image: string;
 }
 export interface Transaction {
  id: number;
@@ -63,15 +65,19 @@ export class AdminComponent implements OnInit {
   switchEdit : boolean = true
   newBook : string = 'none' // for adding new book
   switchBookPop : boolean = true
-  displayedColumns: string[] = ['select', 'position', 'email', 'password', 'delete', 'edit'];
+  displayedColumns: string[] = ['select', 'position', 'image', 'email', 'password', 'delete', 'edit'];
   dataSource = new MatTableDataSource<PeriodicElement>(ELEMENT_DATA);
+  dataSource_2 = new MatTableDataSource<Transaction>();
   selection = new SelectionModel<PeriodicElement>(true, []);
   passValue : string;
   loginValue : string
   exampleForm : FormGroup
   deleteAll : string;
   photoOfBook : any;
-
+  bookName : string;
+  bookAbout : string;
+  bookPrice : number;
+  bool : boolean ;
   pageSize = 3;
   allTiles : Tile[] = [];
   tiles : Tile[] = [];
@@ -80,10 +86,81 @@ export class AdminComponent implements OnInit {
   lowValue:number = 0;
   highValue:number = 3; 
   pageEvent: PageEvent;
+  IdForEdit : number;
+  showBooks : string = 'none';
+  switchBooks : boolean = true
+  showUsers : string = ''
+  enableBooks() {
+    this.showBooks = 'block'
+    this.showUsers = 'none'
+  }
+  enableUsers() {
+    this.showBooks = 'none'
+    this.showUsers = ''
+  }
+
   setPageSizeOptions(setPageSizeOptionsInput: string) {
     alert(setPageSizeOptionsInput);
     this.pageSizeOptions = setPageSizeOptionsInput.split(',').map(str => +str);
   }
+  async remove(item, i) {
+    let response = await fetch(`${environment.apiUrl}books/${item.id}`,{
+      method: 'DELETE'
+    })
+    if(response.ok) {
+      fetch(`${environment.apiUrl}books`).then(item=> item.json())
+              .then(elem=> this.transactions = elem)
+                  .then(()=> this.dataSource_2 = new MatTableDataSource<Transaction>(this.transactions))
+    }
+  }
+  switchBook() {
+    if(this.switchBookPop){
+      this.newBook = 'flex'
+      this.switchBookPop = false
+    }else {
+      this.newBook = 'none'
+      this.switchBookPop = true
+    }
+  }
+  editBook(item) {
+    this.bookName = item.name
+    this.exampleForm.value.name = item.name
+    this.bookAbout = item.about
+    this.exampleForm.value.about = item.about
+    this.bookPrice = item.price
+    this.exampleForm.value.price = item.price
+    this.photoOfBook = item.image;
+    this.exampleForm.value.image = item.image
+    this.image = item.image
+    this.IdForEdit = item.id
+    this.bool = false;
+    this.switchBook()
+  }
+  async editCurrentBook() {
+    if(this.exampleForm.value.name !== null && this.exampleForm.value.price !== null){
+      let response = await fetch(`${environment.apiUrl}books/${this.IdForEdit}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body : JSON.stringify(Object.assign(this.exampleForm.value, { image: this.image} ))
+      })
+        if(response.ok) {
+          let res = await fetch(`${environment.apiUrl}books`)
+                    .then(item=> item.json())
+                          .then( element => this.transactions = element )
+                                  .then( ()=> this.dataSource_2 = new MatTableDataSource<Transaction>(this.transactions) );
+          this.uploaded = 'flex'
+          this.opacity = '0'
+          this.switchBook()
+          this.toastr.success('book edited', 'Success')
+        }
+      
+      }else{
+        this.toastr.error('Fill empty inputs','WARNING')
+      }
+}
+  
   getPaginatorData(event){
     console.log(event);
     if(event.pageIndex === this.pageIndex + 1){
@@ -103,10 +180,8 @@ export class AdminComponent implements OnInit {
       this.deleteAll = 'none'
     }
   }
-  displayedColumnss = ['id', 'image', 'name', 'buttons'];
-  transactions: Transaction[] = [
-    {id:1, image:'asdasd', name: 'sadasd'}
-  ];
+  displayedColumnss = ['id', 'image', 'name', 'price', 'buttons' ];
+  transactions: Transaction[] = [];
   getTotalCost() {
     return this.transactions.map(t => t.id).reduce((acc, value) => acc + value, 0);
   }
@@ -140,7 +215,6 @@ export class AdminComponent implements OnInit {
       },
       body : JSON.stringify(Object.assign(this.exampleForm.value, { image: this.image} ))
       })
-      console.log(this.image)
       this.uploaded = 'flex'
       this.opacity = '0'
       this.openBook()
@@ -158,8 +232,6 @@ export class AdminComponent implements OnInit {
     this.file = <File>img.files[0]
     if(this.file){
       reader.readAsDataURL(this.file)
-    }else{
-      alert('no')
     }
     reader.onload= ()=>{
       this.image = reader.result
@@ -236,6 +308,7 @@ export class AdminComponent implements OnInit {
 
   }
   editValue(row){
+    
     if(this.switchEdit){
       this.editUser = 'flex'
       this.switchEdit = false
@@ -248,14 +321,14 @@ export class AdminComponent implements OnInit {
     }
     
   }
+ 
+
   openBook(){
-    if(this.switchBookPop){
-      this.newBook = 'flex'
-      this.switchBookPop = false
-    }else {
-      this.newBook = 'none'
-      this.switchBookPop = true
-    }
+    this.bookName = null
+    this.bookAbout = null
+    this.bookPrice = null
+    this.bool = true
+    this.switchBook()
   }
   togglePop(){
     if(this.switch){
@@ -322,7 +395,7 @@ export class AdminComponent implements OnInit {
   
   async addUser(user){
 
-    ELEMENT_DATA.push({email : user.email, delete: "delete", edit: "edit",password : user.password, position: ELEMENT_DATA.length + 1  });  
+    ELEMENT_DATA.push({image : user.image, email : user.email, delete: "delete", edit: "edit",password : user.password, position: ELEMENT_DATA.length + 1  });  
     this.dataSource.data = ELEMENT_DATA;
   }
   editCurrentUser(user){
@@ -336,17 +409,11 @@ export class AdminComponent implements OnInit {
   }
   
   ngOnInit() {
-    // this.localStore.getData()
     ELEMENT_DATA.length = 0
-    // for (let i = 0; i < this.localStore.user_2.length; i++) {
-    //   ELEMENT_DATA.push({email : this.localStore.user_2[i].email, delete: "delete", edit: "edit",password : this.localStore.user_2[i].password, position: this.localStore.user_2[i].id  });    
-    // }
-    // this.dataSource.data = ELEMENT_DATA;
-    
      fetch(`${environment.apiUrl}users`)
       .then( prom => prom.json())
         .then( users => {
-            users.map(item=> ELEMENT_DATA.push({email : item.email, delete: "delete", edit: "edit",password : item.password, position: item.id  }))
+            users.map(item=> ELEMENT_DATA.push({image: item.image, email : item.email, delete: "delete", edit: "edit",password : item.password, position: item.id  }))
         }).then( () =>
         this.dataSource = new MatTableDataSource<PeriodicElement>(ELEMENT_DATA)
         )
@@ -354,8 +421,13 @@ export class AdminComponent implements OnInit {
           this.dataSource = new MatTableDataSource<PeriodicElement>(ELEMENT_DATA.filter(item=>{
             return item.email.toLowerCase().indexOf(x) > -1;
           }))})
+    fetch(`${environment.apiUrl}books`)
+          .then( prom => prom.json())
+              .then(item=> {
+                this.transactions = item
+              }).then( () => this.dataSource_2 = new MatTableDataSource<Transaction>(this.transactions))
     }
-    
+  
   }
   
 

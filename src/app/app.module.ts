@@ -61,6 +61,7 @@ import { CartIconComponent } from './cart-icon/cart-icon.component';
 import { NewBookComponent } from './new-book/new-book.component';
 import { SearchComponent } from './search/search.component';
 import { UserComponent } from './user/user.component';
+import { ProfileComponent } from './profile/profile.component';
 
 const routes: Routes = [];
 
@@ -77,7 +78,8 @@ const routes: Routes = [];
     CartIconComponent,
     NewBookComponent,
     SearchComponent,
-    UserComponent
+    UserComponent,
+    ProfileComponent
 
   ],
   imports: [

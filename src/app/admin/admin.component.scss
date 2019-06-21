@@ -1,11 +1,17 @@
-.mat-elevation-z8 {
+.tam {
+    max-height: 60vh;
     width: 70%;
     position: relative;
     left: 50%;
     transform: translate(-50%);
     margin-top: 20px;
     background: rgba(255, 255, 255, 0.432);
-    display: none;
+    overflow: auto;
+    
+    img {
+        height: 50px;
+    }
+    
 }
 button {
     background: transparent;
@@ -18,33 +24,59 @@ button {
         transition: 0.2s;
         padding: 8px 13px;
 }
-
-.mat-elevation-z7 {
+.example-container {
+    max-height: 80vh;
     width: 70%;
     position: relative;
     left: 50%;
     transform: translate(-50%);
-    height: 80vh;
     overflow: auto;
-    .tab{
-        width: 100%;
+    margin-top: 20px;
+  }
+  
+  table {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.397);
+    img {
+        height: 100px;
+    }
+  }
+  
+  tr.mat-footer-row {
+    font-weight: bold;
+    background: rgb(255, 255, 255);
+  }
+  
+  .mat-table-sticky {
+    border-top: 1px solid #e0e0e0;
+  }
 
-        position: relative;
-        left: 50%;
-        transform: translate(-50%);
-        margin-top: 20px;
-        background: rgba(255, 255, 255, 0.432);
-        height: 90vh;
-    }  
-      tr.mat-footer-row {
-        font-weight: bold;
-        background: white;
-      }
+// .mat-elevation-z7 {
+//     width: 70%;
+//     position: relative;
+//     left: 50%;
+//     transform: translate(-50%);
+//     height: 80vh;
+//     overflow: auto;
+//     .tab{
+//         width: 100%;
+
+//         position: relative;
+//         left: 50%;
+//         transform: translate(-50%);
+//         margin-top: 20px;
+//         background: rgba(255, 255, 255, 0.432);
+//         height: 100%;
+//     }  
+//       tr.mat-footer-row {
+//         font-weight: bold;
+//         background: white;
+//       }
       
-      .mat-table-sticky {
-        border-top: 1px solid #e0e0e0;
-      }
-}
+//       .mat-table-sticky {
+//         border-top: 1px solid #e0e0e0;
+//       }
+// }
 .addBook {
     width: 30%;
     height: 40%;

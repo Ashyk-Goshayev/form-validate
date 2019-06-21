@@ -10,17 +10,10 @@ import { Router } from '@angular/router';
 export class UserComponent implements OnInit {
   user : string;
   show : string = 'none';
-  switch : boolean = true;
   constructor(private localStore : LocalStorageService, private route : Router) { }
   showLog() { 
-    if(this.switch) {
       this.show = 'block'
-      // setTimeout(()=>this.show = 'none', 1000)
-      this.switch = false;
-    }else {
-      this.show = 'none';
-      this.switch = true
-    }
+      setTimeout(()=>this.show = 'none', 2000)
   }
   logOut(){
     this.localStore.hide = true
@@ -30,7 +23,7 @@ export class UserComponent implements OnInit {
     return this.route.navigate(['/'])
   }
   ngOnInit() {
-    this.user = localStorage.currentUser
+    this.user = JSON.parse(localStorage.currentUser)[0].email
   }
 
 }

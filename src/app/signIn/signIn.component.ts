@@ -34,12 +34,12 @@ export class SignInComponent implements OnInit {
   onsubmit(){
     this.localStore.onsubmitSign(this.exampleForm.value)
     if(this.localStore.isCorrectSign){
-      this.route.navigate(['/books'])
+      return this.route.navigate(['/books'])
     }
     else if(this.localStore.isAdminLogin){
-      this.route.navigate(['/admin'])
+      return this.route.navigate(['/admin'])
     }else {
-      this.route.navigate(['signIn'])
+      return this.route.navigate(['signIn'])
     }
   }
 
