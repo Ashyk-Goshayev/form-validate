@@ -21,7 +21,7 @@ export class ProfileComponent implements OnInit {
   showEdit : string = 'none'
   switch : boolean = true
   constructor(private service : LocalStorageService, private _location : Location , private formBuilder : FormBuilder, private toastr : ToastrService) {
-    this.showImg = false
+    this.showImg = true
     this.createForm()
    }
   goBack() {
@@ -52,7 +52,7 @@ export class ProfileComponent implements OnInit {
   async confirm() {
     var testEmail = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     var testPass = /[a-zA-Z0-9]/g;
-    let isSameUser = this.service.user_2.filter(item=> item.email === this.editForm.value.email)
+    let isSameUser = this.service.users.filter(item=> item.email === this.editForm.value.email)
     if(isSameUser.length >= 1){
       this.toastr.error('User exist', 'WARNING!')
     }
@@ -65,7 +65,7 @@ export class ProfileComponent implements OnInit {
             body : JSON.stringify(Object.assign( this.editForm.value, {image: this.img}))  
           })
           if(response.ok) {
-            localStorage.currentUser = await JSON.stringify([Object.assign( {id: JSON.parse(localStorage.currentUser)[0].id},  this.editForm.value, {image: this.img})]);
+            localStorage.currentUser = JSON.stringify([Object.assign( {id: JSON.parse(localStorage.currentUser)[0].id},  this.editForm.value, {image: this.img})]);
             this.email = this.editForm.value.email;
             this.name = this.editForm.value.email.split(/@/g)[0]
             this.image = this.img
@@ -89,7 +89,7 @@ export class ProfileComponent implements OnInit {
         this.email = elem.email;
         this.password = elem.password
         this.name = elem.email.split(/@/g)[0]
-        if(elem.image !== undefined){
+        if(elem.image){
           this.showImg = false
           this.image = elem.image
         }

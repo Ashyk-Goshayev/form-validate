@@ -13,11 +13,12 @@
   </form>
 </div>
 <div class="layer" [ngStyle]="{'display': showEdit}" ></div>
-<div class="profile">
-  <i (click)='goBack()' class="fas fa-long-arrow-alt-left"></i>
+
+  
   <div class="profile-card">
+      <i (click)='goBack()' class="fas fa-long-arrow-alt-left"></i>
       <div class="logo">
-          <ng-container *ngIf="showImg; else elseTemplate">
+          <ng-container *ngIf="false; else elseTemplate">
               <i class="fas fa-user-tie"></i>
           </ng-container>
           <ng-template #elseTemplate>
@@ -29,7 +30,6 @@
               <h1>{{name}}<i (click)='editPopUp()' class="fas fa-user-edit"></i></h1>
               
           </div>
-          <span>{{email}}</span>
+         
       </div>
   </div>
-</div>

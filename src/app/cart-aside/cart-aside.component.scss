@@ -1,28 +1,28 @@
 .leftSide {
-    z-index: 7;
-    width: 270px;
+  z-index: 7;
+  width: 270px;
+  height: 750px;
+  position: absolute;
+  background: rgba(255, 255, 255, 0.39);
+  left: -21%;
+  .example-container {
     height: 750px;
-    position: absolute;
-    background: rgba(255, 255, 255, 0.39);
-    left: -21%;
-    .example-container {
-        height: 750px;
-        overflow: auto;
-      }
-      
-      table {
-        width: 100%;
-        max-height: 750px;
-        img{
-            height: 100px;;
-        }
-      }
-      
-      tr.mat-footer-row {
-        font-weight: bold;
-      }
-      
-      .mat-table-sticky {
-        border-top: 1px solid #e0e0e065;
-      }
+    overflow: auto;
+  }
+
+  table {
+    width: 100%;
+    max-height: 750px;
+    img {
+      height: 100px;
+    }
+  }
+
+  tr.mat-footer-row {
+    font-weight: bold;
+  }
+
+  .mat-table-sticky {
+    border-top: 1px solid #e0e0e065;
+  }
 }

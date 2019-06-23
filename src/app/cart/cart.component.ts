@@ -18,8 +18,11 @@ export class CartComponent implements OnInit {
   transactions: Transaction[] = []
   datasource = new MatTableDataSource<Transaction>()
   constructor(private service: LocalStorageService, private router: Router, private bookService : BookServiceService, private _location : Location ){
-    this.datasource = JSON.parse(localStorage.cart)
-    this.transactions = JSON.parse(localStorage.cart)
+    if(localStorage.cart !== undefined) {
+      this.datasource = JSON.parse(localStorage.cart)
+      this.transactions = JSON.parse(localStorage.cart)
+    }
+    
    }
   popUpForRemove : string = 'none'
   switch : boolean = true

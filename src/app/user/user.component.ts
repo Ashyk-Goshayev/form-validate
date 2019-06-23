@@ -9,8 +9,19 @@ import { Router } from '@angular/router';
 })
 export class UserComponent implements OnInit {
   user : string;
+  img : string;
+  hasImage : string;
   show : string = 'none';
-  constructor(private localStore : LocalStorageService, private route : Router) { }
+  constructor(private localStore : LocalStorageService, private route : Router) { 
+    this.user = JSON.parse(localStorage.currentUser)[0].email.split(/@/g)[0]
+    if(JSON.parse(localStorage.currentUser)[0].image){
+      this.hasImage = 'none';
+      this.img = JSON.parse(localStorage.currentUser)[0].image
+    }else {
+      this.hasImage = ''
+    }
+    
+  }
   showLog() { 
       this.show = 'block'
       setTimeout(()=>this.show = 'none', 2000)
@@ -23,7 +34,7 @@ export class UserComponent implements OnInit {
     return this.route.navigate(['/'])
   }
   ngOnInit() {
-    this.user = JSON.parse(localStorage.currentUser)[0].email
+    
   }
 
 }

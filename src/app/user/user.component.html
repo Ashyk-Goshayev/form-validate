@@ -1,7 +1,10 @@
 <div class="btns">
     <div class="userBtn">
-        
-        <a class="user" (click)='showLog()' ><i class="far fa-user"></i>{{ user }}</a>
+        <div class="img">
+            <i [ngStyle]="{'display': hasImage}" class="far fa-dizzy"></i>
+            <img src="{{img}}" alt="">
+        </div>
+        <a class="user" (click)='showLog()'>{{ user }}</a>
     </div>
     
     <a class="log" (click)='logOut()' [ngStyle]="{'display': show}" >Log out</a>

@@ -16,9 +16,6 @@ export class AuthGuard implements CanActivate {
   canActivate(): boolean {
     if(JSON.parse(localStorage.currentUser)[0].email === 'admin@gmail.com'){
       return true
-    }else if(localStorage.currentUser != null && JSON.parse(localStorage.currentUser)[0].email !== 'admin@gmail.com'){
-        this.router.navigate(['books'])
-        return false
     }
     else{
       this.router.navigate(['signIn'])

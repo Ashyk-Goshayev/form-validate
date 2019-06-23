@@ -8,7 +8,7 @@ import { Router, ActivatedRoute } from '@angular/router'
   styleUrls: ['./register.component.scss']
 })
 export class RegisterComponent implements OnInit {
-
+  uploadedImg : string = ''
   exampleForm : FormGroup;
   isInvalid : boolean = false;
   user : string[];
@@ -30,6 +30,7 @@ export class RegisterComponent implements OnInit {
       alert('no')
     }
     reader.onload= ()=>{
+      this.uploadedImg = 'none'
       this.image = reader.result
     };
   }
