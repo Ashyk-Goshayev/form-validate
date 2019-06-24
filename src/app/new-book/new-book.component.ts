@@ -4,7 +4,7 @@ import { Subscription } from "rxjs";
 import { ActivatedRoute, Router } from "@angular/router";
 import { environment } from "../../environments/environment";
 import { Location } from "@angular/common";
-
+import { Book } from "../interfaces";
 @Component({
   selector: "app-new-book",
   templateUrl: "./new-book.component.html",
@@ -12,7 +12,7 @@ import { Location } from "@angular/common";
 })
 export class NewBookComponent implements OnInit {
   private subsc: Subscription;
-  book: any;
+  book: Book;
   id: number;
   constructor(
     private service: BookServiceService,

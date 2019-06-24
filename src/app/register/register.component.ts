@@ -8,7 +8,7 @@ import { Router } from "@angular/router";
   templateUrl: "./register.component.html",
   styleUrls: ["./register.component.scss"]
 })
-export class RegisterComponent implements OnInit {
+export class RegisterComponent {
   uploadedImg: string = "";
   exampleForm: FormGroup;
   isInvalid: boolean = false;
@@ -63,5 +63,4 @@ export class RegisterComponent implements OnInit {
       return (this.isSwitched = true);
     }
   }
-  ngOnInit() {}
 }

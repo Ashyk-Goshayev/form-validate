@@ -25,7 +25,7 @@ export class CartComponent implements OnInit {
     private bookService: BookServiceService,
     private _location: Location
   ) {
-    if (localStorage.cart !== undefined) {
+    if (!localStorage.cart) {
       this.datasource = JSON.parse(localStorage.cart);
       this.transactions = JSON.parse(localStorage.cart);
     }
@@ -47,6 +47,8 @@ export class CartComponent implements OnInit {
   }
   showPop(element = null, path = null) {
     this.index = path;
+    console.log(path);
+
     this.bookPrice = element;
     console.log(element);
     if (this.switch) {

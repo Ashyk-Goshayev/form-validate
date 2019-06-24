@@ -4,7 +4,7 @@ import { Subject } from "rxjs";
 import { map } from "rxjs/operators";
 import { HttpClient } from "@angular/common/http";
 import { environment } from "src/environments/environment";
-import { User } from "./interfaces";
+import { User, Book } from "./interfaces";
 @Injectable({
   providedIn: "root"
 })
@@ -45,11 +45,4 @@ export class BookServiceService {
   sendBookPrice(price: number) {
     this.price.next(price);
   }
-}
-export interface Book {
-  image: string;
-  name: string;
-  price: number;
-  about: string;
-  id: number;
 }

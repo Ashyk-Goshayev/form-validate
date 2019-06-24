@@ -4,7 +4,7 @@ import { LocalStorageService } from "../main.service";
 import { Router } from "@angular/router";
 import { Observable } from "rxjs";
 import { BookServiceService } from "../book-service.service";
-import { Book } from "../book-service.service";
+import { Book } from "../interfaces";
 import { environment } from "../../environments/environment";
 import { Tile } from "../interfaces";
 
@@ -25,7 +25,7 @@ export class BooksComponent implements OnInit {
   cartLength: number = 0;
   pageEvent: PageEvent;
   showContent: Observable<Tile>;
-  myCart: object[] = [];
+  myCart: any[] = [];
   books: Book[];
   constructor(
     private localStore: LocalStorageService,
@@ -49,10 +49,10 @@ export class BooksComponent implements OnInit {
     this.service.sendBookInfo(cart);
     if (localStorage.cart !== undefined) {
       this.ex = JSON.parse(localStorage.cart);
-      this.ex.push(cart);
+      this.ex.unshift(cart);
       return (localStorage.cart = JSON.stringify(this.ex));
     }
-    this.ex.push(cart);
+    this.ex.unshift(cart);
     return (localStorage.cart = JSON.stringify(this.ex));
   }
 

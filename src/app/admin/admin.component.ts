@@ -1,25 +1,16 @@
 import { Component, OnInit, ViewChild } from "@angular/core";
-import { SelectionModel, DataSource } from "@angular/cdk/collections";
+import { SelectionModel } from "@angular/cdk/collections";
 import { MatTableDataSource } from "@angular/material/table";
 import { LocalStorageService } from "../main.service";
-import { Router, NavigationEnd } from "@angular/router";
-import { Location } from "@angular/common";
 import { MatPaginator } from "@angular/material/paginator";
 import { FormGroup, FormBuilder, FormControl } from "@angular/forms";
 import { ToastrService } from "ngx-toastr";
 import { environment } from "../../environments/environment";
 import { BookServiceService } from "../book-service.service";
-import { Tile, PeriodicElement, Transaction, User } from "../interfaces";
+import { PeriodicElement, Transaction, User } from "../interfaces";
 
 let ELEMENT_DATA: PeriodicElement[] = [];
-// export interface User {
 
-export interface Books {
-  name: string;
-  about: string;
-  price: number;
-  image: string;
-}
 @Component({
   selector: "app-admin",
   templateUrl: "./admin.component.html",
@@ -65,10 +56,11 @@ export class AdminComponent implements OnInit {
   showUsers: string = "";
   row: User;
   file: File = null;
-  image: any;
+  image: string;
   uploaded: string;
   opacity: string;
   isSorted: boolean = true;
+
   enableBooks() {
     this.showBooks = "block";
     this.showUsers = "none";
@@ -118,39 +110,34 @@ export class AdminComponent implements OnInit {
     this.switchBook();
   }
   async editCurrentBook() {
-    if (
-      this.exampleForm.value.name !== null &&
-      this.exampleForm.value.price !== null
-    ) {
-      let response = await fetch(
-        `${environment.apiUrl}books/${this.IdForEdit}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify(
-            Object.assign(this.exampleForm.value, { image: this.image })
-          )
-        }
-      );
-      if (response.ok) {
-        let res = await fetch(`${environment.apiUrl}books`)
-          .then(item => item.json())
-          .then(element => (this.transactions = element))
-          .then(
-            () =>
-              (this.dataSource_2 = new MatTableDataSource<Transaction>(
-                this.transactions
-              ))
-          );
-        this.uploaded = "flex";
-        this.opacity = "0";
-        this.switchBook();
-        this.toastr.success("book edited", "Success");
-      }
-    } else {
+    if (!this.exampleForm.value.name || !this.exampleForm.value.price) {
       this.toastr.error("Fill empty inputs", "WARNING");
+      return;
+    }
+
+    let response = await fetch(`${environment.apiUrl}books/${this.IdForEdit}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(
+        Object.assign(this.exampleForm.value, { image: this.image })
+      )
+    });
+    if (response.ok) {
+      let res = await fetch(`${environment.apiUrl}books`)
+        .then(item => item.json())
+        .then(element => (this.transactions = element))
+        .then(
+          () =>
+            (this.dataSource_2 = new MatTableDataSource<Transaction>(
+              this.transactions
+            ))
+        );
+      this.uploaded = "flex";
+      this.opacity = "0";
+      this.switchBook();
+      this.toastr.success("book edited", "Success");
     }
   }
 
@@ -231,7 +218,7 @@ export class AdminComponent implements OnInit {
       reader.readAsDataURL(this.file);
     }
     reader.onload = () => {
-      this.image = reader.result;
+      this.image = <string>reader.result;
       this.photoOfBook = reader.result;
       this.uploaded = "none";
       this.opacity = "1";
@@ -310,7 +297,7 @@ export class AdminComponent implements OnInit {
   }
 
   editValue(row = null) {
-    if (this.switchEdit) {
+    if (this.switchEdit && row) {
       this.editUser = "flex";
       this.switchEdit = false;
       this.passValue = row.password;
@@ -454,6 +441,7 @@ export class AdminComponent implements OnInit {
           ))
       )
       .then(() => (this.dataSource.paginator = this.paginator));
+
     this.bookService.sendText.subscribe(x => {
       this.dataSource = new MatTableDataSource<PeriodicElement>(
         ELEMENT_DATA.filter(item => {

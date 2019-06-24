@@ -39,3 +39,10 @@ export interface List {
   delete: string;
   edit: string;
 }
+export interface Book {
+  image: string;
+  name: string;
+  price: number;
+  about: string;
+  id: number;
+}

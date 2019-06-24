@@ -63,6 +63,7 @@ import { SearchComponent } from "./search/search.component";
 import { UserComponent } from "./user/user.component";
 import { ProfileComponent } from "./profile/profile.component";
 import { ShopGuardsService } from "./guards/shop-guards.service";
+import { CommonModule } from "@angular/common";
 
 const routes: Routes = [];
 
@@ -84,6 +85,7 @@ const routes: Routes = [];
   ],
   imports: [
     FormsModule,
+    CommonModule,
     BrowserModule,
     AppRoutingModule,
     MatAutocompleteModule,
@@ -128,6 +130,7 @@ const routes: Routes = [];
     RouterModule.forRoot(routes, { onSameUrlNavigation: "reload" }),
     MatButtonModule,
     MatCheckboxModule,
+
     BrowserAnimationsModule,
     ToastrModule.forRoot({
       timeOut: 3000,
