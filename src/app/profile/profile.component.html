@@ -1,35 +1,50 @@
-<div class="popUp" [ngStyle]="{'display': showEdit}" >
-  <form [formGroup]='editForm' >
-    <div class="file" >
-      <input type="file" accept="image/*" (change)='getURL($event.target)'>
-      <img src="{{img}}" alt="">
+<div class="popUp" [ngStyle]="{ display: showEdit }">
+  <form [formGroup]="editForm">
+    <div class="file">
+      <input type="file" accept="image/*" (change)="getURL($event.target)" />
+      <ng-container *ngIf="showEditImg; else temp">
+        <i class="fas fa-user-tie"></i>
+      </ng-container>
+      <ng-template #temp>
+        <img src="{{ img }}" alt="" />
+      </ng-template>
     </div>
-      <input formControlName="email" type="text" placeholder="email">
-     <input formControlName="password" type="text" placeholder="password">
-      <div>
-          <button (click)='editPopUp()' >Cancel</button>
-          <button (click)='confirm()' >Confirm</button>
-      </div>
+
+    <input
+      matInput
+      value="{{ email }}"
+      formControlName="email"
+      type="text"
+      placeholder="email"
+    />
+
+    <input
+      value="{{ password }}"
+      formControlName="password"
+      type="text"
+      placeholder="password"
+    />
+    <div class="buttons">
+      <button mat-flat-button (click)="editPopUp()">Cancel</button>
+      <button mat-flat-button (click)="confirm()" type="submit">Confirm</button>
+    </div>
   </form>
 </div>
-<div class="layer" [ngStyle]="{'display': showEdit}" ></div>
+<div class="layer" [ngStyle]="{ display: showEdit }"></div>
 
-  
-  <div class="profile-card">
-      <i (click)='goBack()' class="fas fa-long-arrow-alt-left"></i>
-      <div class="logo">
-          <ng-container *ngIf="false; else elseTemplate">
-              <i class="fas fa-user-tie"></i>
-          </ng-container>
-          <ng-template #elseTemplate>
-              <img src="{{image}}" alt="">
-          </ng-template>   
-      </div>
-      <div class="info">
-          <div class="btn">
-              <h1>{{name}}<i (click)='editPopUp()' class="fas fa-user-edit"></i></h1>
-              
-          </div>
-         
-      </div>
+<div class="profile-card">
+  <i (click)="goBack()" class="fas fa-long-arrow-alt-left"></i>
+  <div class="logo">
+    <ng-container *ngIf="showImg; else elseTemplate">
+      <i class="fas fa-user-tie"></i>
+    </ng-container>
+    <ng-template #elseTemplate>
+      <img src="{{ image }}" alt="" />
+    </ng-template>
   </div>
+  <div class="info">
+    <div class="btn">
+      <h1>{{ name }}<i (click)="editPopUp()" class="fas fa-user-edit"></i></h1>
+    </div>
+  </div>
+</div>

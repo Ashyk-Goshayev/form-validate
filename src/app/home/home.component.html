@@ -13,8 +13,13 @@
       <app-search></app-search>
 
       <div *ngIf="showCart">
+        <a routerLink="books"><i class="fas fa-shopping-bag"></i></a>
         <app-cart-icon></app-cart-icon>
       </div>
+      <!-- <ng-template #admin>
+        <a routerLink="admin"><i class="fas fa-shopping-bag"></i></a>
+      </ng-template> -->
+
       <app-user></app-user>
     </div>
   </ng-template>

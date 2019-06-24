@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
-import { BookServiceService } from '../book-service.service';
+import { Component, OnInit } from "@angular/core";
+import { BookServiceService } from "../book-service.service";
+
 @Component({
-  selector: 'app-cart-icon',
-  templateUrl: './cart-icon.component.html',
-  styleUrls: ['./cart-icon.component.scss']
+  selector: "app-cart-icon",
+  templateUrl: "./cart-icon.component.html",
+  styleUrls: ["./cart-icon.component.scss"]
 })
 export class CartIconComponent implements OnInit {
   price = 0;

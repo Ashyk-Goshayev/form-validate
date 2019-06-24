@@ -1,23 +1,25 @@
-import { Component, OnInit } from '@angular/core';
-import { BookServiceService } from '../book-service.service';
-import { Book } from '../book-service.service';
-import { MatTableDataSource } from '@angular/material/table';
+import { Component, OnInit } from "@angular/core";
+import { BookServiceService } from "../book-service.service";
+import { MatTableDataSource } from "@angular/material/table";
+import { Transaction } from "../interfaces";
+
 @Component({
-  selector: 'app-cart-aside',
-  templateUrl: './cart-aside.component.html',
-  styleUrls: ['./cart-aside.component.scss']
+  selector: "app-cart-aside",
+  templateUrl: "./cart-aside.component.html",
+  styleUrls: ["./cart-aside.component.scss"]
 })
 export class CartAsideComponent implements OnInit {
+  displayedColumns = ["image", "name"];
+  transactions: Transaction[] = [];
+  ex: Transaction[] = [];
+  dataSource = new MatTableDataSource<Transaction>();
+
   constructor(private service: BookServiceService) {
     if (localStorage.cart !== undefined) {
       this.transactions = JSON.parse(localStorage.cart);
       this.dataSource = new MatTableDataSource<Transaction>(this.transactions);
     }
   }
-  displayedColumns = ['image', 'name'];
-  transactions: Transaction[] = [];
-  ex: Transaction[] = [];
-  dataSource = new MatTableDataSource<Transaction>();
 
   ngOnInit() {
     this.service.abservableBook.subscribe(x => {
@@ -25,8 +27,4 @@ export class CartAsideComponent implements OnInit {
       this.dataSource = new MatTableDataSource<Transaction>(this.transactions);
     });
   }
-}
-export interface Transaction {
-  image: string;
-  name: string;
 }

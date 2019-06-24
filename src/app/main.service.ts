@@ -1,33 +1,10 @@
 import { Injectable } from "@angular/core";
 import { ToastrService } from "ngx-toastr";
-import { PeriodicElement } from "./admin/admin.component";
+import { Price, Admin, User } from "./interfaces";
 import { Router } from "@angular/router";
 import { __param } from "tslib";
 import { environment } from "../environments/environment";
-export interface Admin {
-  email: string;
-  password: string;
-}
-export interface Price {
-  name: string;
-  about: string;
-  price: number;
-  image: string;
-}
-export interface User {
-  id: number;
-  email: string;
-  password: string;
-  image: any;
-}
 
-export interface List {
-  position: number;
-  email: string;
-  password: string;
-  delete: string;
-  edit: string;
-}
 @Injectable({
   providedIn: "root"
 })
@@ -43,9 +20,11 @@ export class LocalStorageService {
   isCorrectSign: boolean = false; // for navigate to books page
   hide: boolean = true; // for hide buttons
   isAdminLogin: boolean = false;
+  isSuccess: boolean = false;
+  id: number;
   constructor(private toastr: ToastrService, private router: Router) {
     this.arrayOfUsers = [];
-    this.getData();
+    this.getData().then(users => (this.users = users));
     if (
       localStorage.currentUser !== undefined &&
       localStorage.currentUser !== ""
@@ -63,14 +42,9 @@ export class LocalStorageService {
   }
 
   getData() {
-    return fetch(`${environment.apiUrl}users`)
-      .then(prom => prom.json())
-      .then(users => {
-        return (this.users = users);
-      });
+    return fetch(`${environment.apiUrl}users`).then(prom => prom.json());
   }
 
-  isSuccess: boolean = false;
   async onsubmitReg(
     formInput: { email: string; password: string; passwordRepeat: string },
     img: any
@@ -78,20 +52,17 @@ export class LocalStorageService {
     var isSameUser = null;
     var testEmail = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     var testPass = /[a-zA-Z0-9]/g;
-    // fetch(`${environment.apiUrl}users`)
-    // .then( prom => prom.json())
-    //   .then( users => {
-    //     return isSameUser = users.filter(item=> item.email === formInput.email)
-    //    });
-
-    //   if(isSameUser.length >= 1){
-    //     this.isSuccess = false
-    //     this.hideCart = false
-    //     return this.toastr.error('User exist', 'WARNING!')
-    //   }
+    isSameUser = this.users.filter(item => item.email === formInput.email);
+    if (isSameUser.length >= 1) {
+      this.isSuccess = false;
+      this.hideCart = false;
+      return this.toastr.error("User exist", "WARNING!");
+    }
     if (testEmail.test(formInput.email) && testPass.test(formInput.password)) {
       if (formInput.password === formInput.passwordRepeat) {
-        await fetch(`${environment.apiUrl}users`, {
+        this.isSuccess = true;
+        this.hideCart = true;
+        fetch(`${environment.apiUrl}users`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json"
@@ -101,11 +72,12 @@ export class LocalStorageService {
             password: formInput.password,
             image: img
           })
-        });
-        await this.getData();
-        this.isSuccess = true;
-        this.hideCart = true;
-        this.toastr.success("Registration passed", "SUCCESS");
+        }).then(() =>
+          this.getData().then(users => {
+            this.users = users;
+            this.toastr.success("Registration passed", "SUCCESS");
+          })
+        );
       } else {
         // this.isSuccess = false
         // this.hideCart = false
@@ -118,7 +90,6 @@ export class LocalStorageService {
     }
   }
 
-  id: number;
   onsubmitSign(inputForm: { email: string; password: string }) {
     if (this.users != null || this.admin != null) {
       if (
@@ -132,7 +103,6 @@ export class LocalStorageService {
             : null;
         });
         if (user.length >= 1) {
-          console.log("login");
           localStorage.currentUser = JSON.stringify(user);
           this.hideCart = true;
           this.isCorrectSign = true;

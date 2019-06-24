@@ -1,56 +1,18 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ViewChild } from "@angular/core";
 import { SelectionModel, DataSource } from "@angular/cdk/collections";
 import { MatTableDataSource } from "@angular/material/table";
-import { LocalStorageService } from "../local-storage.service";
+import { LocalStorageService } from "../main.service";
 import { Router, NavigationEnd } from "@angular/router";
 import { Location } from "@angular/common";
-import {
-  FormGroup,
-  FormBuilder,
-  Validators,
-  FormControl
-} from "@angular/forms";
-import {
-  MatDialog,
-  MatDialogRef,
-  MAT_DIALOG_DATA
-} from "@angular/material/dialog";
+import { MatPaginator } from "@angular/material/paginator";
+import { FormGroup, FormBuilder, FormControl } from "@angular/forms";
 import { ToastrService } from "ngx-toastr";
-import { Observable } from "rxjs";
 import { environment } from "../../environments/environment";
 import { BookServiceService } from "../book-service.service";
-import { PageEvent } from "@angular/material/paginator";
-import { element } from "protractor";
-export interface PeriodicElement {
-  email: string;
-  position: number;
-  password: string;
-  delete: string;
-  edit: string;
-  image: string;
-}
-export interface Transaction {
-  id: number;
-  image: string;
-  name: string;
-}
-export interface Tile {
-  name: string;
-  about: string;
-  price: number;
-  image: string;
-}
+import { Tile, PeriodicElement, Transaction, User } from "../interfaces";
 
 let ELEMENT_DATA: PeriodicElement[] = [];
-export interface User {
-  id: number;
-  email: string;
-  password: string;
-}
-export interface User {
-  email: string;
-  password: string;
-}
+// export interface User {
 
 export interface Books {
   name: string;
@@ -83,6 +45,7 @@ export class AdminComponent implements OnInit {
     "delete",
     "edit"
   ];
+  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   dataSource = new MatTableDataSource<PeriodicElement>(ELEMENT_DATA);
   dataSource_2 = new MatTableDataSource<Transaction>();
   selection = new SelectionModel<PeriodicElement>(true, []);
@@ -95,18 +58,17 @@ export class AdminComponent implements OnInit {
   bookAbout: string;
   bookPrice: number;
   bool: boolean;
-  pageSize = 3;
-  allTiles: Tile[] = [];
-  tiles: Tile[] = [];
-  pageSizeOptions: number[] = [3];
-  pageIndex: number = 0;
-  lowValue: number = 0;
-  highValue: number = 3;
-  pageEvent: PageEvent;
+  pageSizeOptions: number[] = [10];
   IdForEdit: number;
   showBooks: string = "none";
   switchBooks: boolean = true;
   showUsers: string = "";
+  row: User;
+  file: File = null;
+  image: any;
+  uploaded: string;
+  opacity: string;
+  isSorted: boolean = true;
   enableBooks() {
     this.showBooks = "block";
     this.showUsers = "none";
@@ -116,9 +78,6 @@ export class AdminComponent implements OnInit {
     this.showUsers = "";
   }
 
-  setPageSizeOptions(setPageSizeOptionsInput: string) {
-    this.pageSizeOptions = setPageSizeOptionsInput.split(",").map(str => +str);
-  }
   async remove(item, i) {
     let response = await fetch(`${environment.apiUrl}books/${item.id}`, {
       method: "DELETE"
@@ -195,17 +154,6 @@ export class AdminComponent implements OnInit {
     }
   }
 
-  getPaginatorData(event) {
-    console.log(event);
-    if (event.pageIndex === this.pageIndex + 1) {
-      this.lowValue = this.lowValue + this.pageSize;
-      this.highValue = this.highValue + this.pageSize;
-    } else if (event.pageIndex === this.pageIndex - 1) {
-      this.lowValue = this.lowValue - this.pageSize;
-      this.highValue = this.highValue - this.pageSize;
-    }
-    this.pageIndex = event.pageIndex;
-  }
   showSelected() {
     if (this.selection.selected.length > 0) {
       this.deleteAll = "block";
@@ -217,7 +165,7 @@ export class AdminComponent implements OnInit {
   transactions: Transaction[] = [];
   getTotalCost() {
     return this.transactions
-      .map(t => t.id)
+      .map(t => t.price)
       .reduce((acc, value) => acc + value, 0);
   }
   isAllSelected() {
@@ -231,8 +179,7 @@ export class AdminComponent implements OnInit {
       ? this.selection.clear()
       : this.dataSource.data.forEach(row => this.selection.select(row));
   }
-  file: File = null;
-  image: any;
+
   /** The label for the checkbox on the passed row */
   checkboxLabel(row?: PeriodicElement): string {
     if (!row) {
@@ -256,7 +203,18 @@ export class AdminComponent implements OnInit {
         body: JSON.stringify(
           Object.assign(this.exampleForm.value, { image: this.image })
         )
-      });
+      }).then(() =>
+        fetch(`${environment.apiUrl}books`)
+          .then(item => item.json())
+          .then(books => (this.transactions = books))
+          .then(
+            () =>
+              (this.dataSource_2 = new MatTableDataSource<Transaction>(
+                this.transactions
+              ))
+          )
+      );
+
       this.uploaded = "flex";
       this.opacity = "0";
       this.openBook();
@@ -266,8 +224,6 @@ export class AdminComponent implements OnInit {
     }
   }
 
-  uploaded: string;
-  opacity: string;
   getURL(img) {
     const reader = new FileReader();
     this.file = img.files[0] as File;
@@ -297,10 +253,10 @@ export class AdminComponent implements OnInit {
         })[0];
         ELEMENT_DATA.splice(ELEMENT_DATA.indexOf(el), 1);
       }
-      this.dataSource.data = ELEMENT_DATA;
+      this.dataSource = new MatTableDataSource<PeriodicElement>(ELEMENT_DATA);
+      this.dataSource.paginator = this.paginator;
     }
   }
-  isSorted: boolean = true;
 
   sortByNo() {
     if (this.isSorted) {
@@ -313,9 +269,8 @@ export class AdminComponent implements OnInit {
         return 0;
       });
       this.isSorted = false;
-      return (this.dataSource = new MatTableDataSource<PeriodicElement>(
-        ELEMENT_DATA
-      ));
+      this.dataSource = new MatTableDataSource<PeriodicElement>(ELEMENT_DATA);
+      this.dataSource.paginator = this.paginator;
     } else {
       ELEMENT_DATA = ELEMENT_DATA.sort((a, b) => {
         if (a.position < b.position) {
@@ -326,9 +281,8 @@ export class AdminComponent implements OnInit {
         return 0;
       });
       this.isSorted = true;
-      return (this.dataSource = new MatTableDataSource<PeriodicElement>(
-        ELEMENT_DATA
-      ));
+      this.dataSource = new MatTableDataSource<PeriodicElement>(ELEMENT_DATA);
+      this.dataSource.paginator = this.paginator;
     }
   }
   async deleteRow() {
@@ -348,18 +302,21 @@ export class AdminComponent implements OnInit {
         i++;
       }
       this.dataSource = new MatTableDataSource<PeriodicElement>(ELEMENT_DATA);
+      this.dataSource.paginator = this.paginator;
       this.openDialog();
     } else {
       alert("not deleted");
     }
   }
-  editValue(row) {
+
+  editValue(row = null) {
     if (this.switchEdit) {
       this.editUser = "flex";
       this.switchEdit = false;
       this.passValue = row.password;
       this.loginValue = row.email;
       this.position = row.position;
+      this.row = row;
     } else {
       this.editUser = "none";
       this.switchEdit = true;
@@ -388,37 +345,46 @@ export class AdminComponent implements OnInit {
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({ email: em, password: pass })
+      body: JSON.stringify(
+        Object.assign({ email: em, password: pass }, { image: this.row.image })
+      )
+    }).then(() =>
+      this.localStore.getData().then(users => (this.localStore.users = users))
+    );
+    this.editCurrentUser({
+      email: em,
+      password: pass,
+      id: this.position,
+      image: this.row.image
     });
-    this.editCurrentUser({ email: em, password: pass, id: this.position });
+    this.editValue();
   }
   async openSnackBar(email: string, password: string) {
-    this.localStore.getData();
-    const isSameUser = this.localStore.users.filter(
-      item => item.email === email
-    );
-    if (isSameUser.length === 0) {
-      const result = await fetch(`${environment.apiUrl}users`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ email, password })
-      });
-      if (result.ok) {
-        this.addUser({ email, password });
-        this.togglePop();
+    this.localStore.getData().then(users => {
+      const isSameUser = users.filter(item => item.email === email);
+      if (isSameUser.length === 0) {
+        fetch(`${environment.apiUrl}users`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ email: email, password: password })
+        }).then(() => {
+          this.localStore
+            .getData()
+            .then(users => (this.localStore.users = users));
+          this.addUser({ email, password });
+          this.togglePop();
+        });
+      } else {
+        this.toastr.error("User exist", "WARNING");
       }
-    } else {
-      this.toastr.error("User exist", "WARNING");
-    }
+    });
   }
   constructor(
     private localStore: LocalStorageService,
     private formBuilder: FormBuilder,
     private toastr: ToastrService,
-    private router: Router,
-    private location: Location,
     private bookService: BookServiceService
   ) {
     this.createForm();
@@ -447,12 +413,13 @@ export class AdminComponent implements OnInit {
     ELEMENT_DATA.push({
       image: user.image,
       email: user.email,
-      delete: "delete",
-      edit: "edit",
+      // delete: "delete",
+      // edit: "edit",
       password: user.password,
       position: ELEMENT_DATA.length + 1
     });
-    this.dataSource.data = ELEMENT_DATA;
+    this.dataSource = new MatTableDataSource<PeriodicElement>(ELEMENT_DATA);
+    this.dataSource.paginator = this.paginator;
   }
   editCurrentUser(user) {
     const oldUser = ELEMENT_DATA.filter(x => {
@@ -462,7 +429,8 @@ export class AdminComponent implements OnInit {
       oldUser.email = user.email;
     }
 
-    this.dataSource.data = ELEMENT_DATA;
+    this.dataSource = new MatTableDataSource<PeriodicElement>(ELEMENT_DATA);
+    this.dataSource.paginator = this.paginator;
   }
 
   ngOnInit() {
@@ -474,8 +442,6 @@ export class AdminComponent implements OnInit {
           ELEMENT_DATA.push({
             image: item.image,
             email: item.email,
-            delete: "delete",
-            edit: "edit",
             password: item.password,
             position: item.id
           })
@@ -486,7 +452,8 @@ export class AdminComponent implements OnInit {
           (this.dataSource = new MatTableDataSource<PeriodicElement>(
             ELEMENT_DATA
           ))
-      );
+      )
+      .then(() => (this.dataSource.paginator = this.paginator));
     this.bookService.sendText.subscribe(x => {
       this.dataSource = new MatTableDataSource<PeriodicElement>(
         ELEMENT_DATA.filter(item => {

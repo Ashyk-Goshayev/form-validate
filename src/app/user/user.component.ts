@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { LocalStorageService } from "../local-storage.service";
+import { LocalStorageService } from "../main.service";
 import { Router } from "@angular/router";
 import { BookServiceService } from "../book-service.service";
 
@@ -28,22 +28,28 @@ export class UserComponent implements OnInit {
   }
   showLog() {
     this.show = "block";
-    setTimeout(() => (this.show = "none"), 2000);
+    setTimeout(() => (this.show = "none"), 3000);
+  }
+  openProfile() {
+    return (this.show = "none");
   }
   logOut() {
     this.localStore.hide = true;
     this.localStore.isCorrectSign = false;
-    localStorage.currentUser = "";
+    localStorage.removeItem("currentUser");
+    // localStorage.currentUser = "";
+    localStorage.removeItem("cart");
     this.localStore.hide;
     return this.route.navigate(["/"]);
   }
   ngOnInit() {
     this.BookService.observableUser.subscribe(x => {
-      this.user = x.email.split(/@/g)[0];
-      if (x.image) {
+      this.user = x[0].email.split(/@/g)[0];
+      if (x[0].image) {
         this.hasImage = "none";
-        this.img = x.image;
+        this.img = x[0].image;
       } else {
+        this.img = "";
         this.hasImage = "";
       }
     });

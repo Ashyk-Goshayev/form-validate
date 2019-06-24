@@ -1,28 +1,13 @@
-import { Component, OnInit, ViewChild } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { PageEvent } from "@angular/material/paginator";
-import { LocalStorageService } from "../local-storage.service";
-import { Router, ActivatedRoute } from "@angular/router";
-import { Observable, Subject, from, of } from "rxjs";
+import { LocalStorageService } from "../main.service";
+import { Router } from "@angular/router";
+import { Observable } from "rxjs";
 import { BookServiceService } from "../book-service.service";
-import { MatPaginator } from "@angular/material/paginator";
-import { MatTableDataSource } from "@angular/material/table";
-import { map } from "rxjs/operators";
-import { HttpClient } from "@angular/common/http";
 import { Book } from "../book-service.service";
 import { environment } from "../../environments/environment";
-import { element } from "protractor";
-export interface Tile {
-  name: string;
-  about: string;
-  price: number;
-  image: string;
-}
-export interface Price {
-  name: string;
-  about: string;
-  price: number;
-  image: string;
-}
+import { Tile } from "../interfaces";
+
 @Component({
   selector: "app-books",
   templateUrl: "./books.component.html",
@@ -33,7 +18,7 @@ export class BooksComponent implements OnInit {
   allTiles: Tile[] = [];
   tiles: Tile[] = [];
   pageSizeOptions: number[] = [10];
-
+  ex: number[] = [];
   pageIndex: number = 0;
   lowValue: number = 0;
   highValue: number = 10;
@@ -50,7 +35,6 @@ export class BooksComponent implements OnInit {
     this.bookInfo();
     this.tiles = this.allTiles;
   }
-  ex: number[] = [];
 
   bookInfo() {
     let response = fetch(`${environment.apiUrl}books`)
@@ -96,7 +80,6 @@ export class BooksComponent implements OnInit {
   }
 
   getPaginatorData(event) {
-    console.log(event);
     if (event.pageIndex === this.pageIndex + 1) {
       this.lowValue = this.lowValue + this.pageSize;
       this.highValue = this.highValue + this.pageSize;

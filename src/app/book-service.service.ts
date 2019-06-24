@@ -4,7 +4,7 @@ import { Subject } from "rxjs";
 import { map } from "rxjs/operators";
 import { HttpClient } from "@angular/common/http";
 import { environment } from "src/environments/environment";
-import { User } from "./local-storage.service";
+import { User } from "./interfaces";
 @Injectable({
   providedIn: "root"
 })
