@@ -1,6 +1,6 @@
-<div class="layer" [ngStyle]="{ display: popUpForRemove }"></div>
+<div class="layer" *ngIf="showDeleteActions"></div>
 
-<div class="pop-up" [ngStyle]="{ display: popUpForRemove }">
+<div class="pop-up" *ngIf="showDeleteActions">
   <div mat-dialog-content>
     <p>Confirm action</p>
   </div>

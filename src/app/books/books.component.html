@@ -2,7 +2,7 @@
   <app-cart-aside></app-cart-aside>
   <mat-grid-list cols="5" rowHeight="1:1.4">
     <mat-grid-tile *ngFor="let tile of tiles | slice: lowValue:highValue">
-      <div class="data" (click)="navigate(tile)">
+      <div class="data" (click)="navigateToCurrentBook(tile)">
         <img src="{{ tile.image }}" alt="no photo" />
         <span>{{ tile.name }}</span>
         <h2>{{ tile.price | currency: "USD" }}</h2>

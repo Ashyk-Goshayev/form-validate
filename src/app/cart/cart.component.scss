@@ -5,7 +5,6 @@
   position: absolute;
   top: -10%;
   z-index: 5;
-  display: none;
 }
 // .x {
 //   position: absolute;
@@ -21,12 +20,12 @@
 .pop-up {
   position: absolute;
   transform: translate(-50%);
-  height: 150px;;
+  height: 150px;
+  display: flex;
   left: 50%;
   z-index: 200;
   width: 200px;
   top: 30%;
-  display: none;
   flex-direction: column;
   justify-content: space-around;
   align-items: center;
@@ -38,68 +37,64 @@
     button {
       border: 1px solid black;
       color: black;
-      
+
       padding: 5px 10px;
     }
   }
-  
 }
 .cart {
-    width: 70%;
-    margin-top: 20px;
-    height: 90vh;
-    background: white;
-    position: relative;
-    left: 50%;
-    transform: translate(-50%);
-    
-    
-    .example-container {
-        height: 100%;
-        overflow: auto;
-      }
-      
-      table {
-        width: 100%;
-    
-      }
-      img{
-          height: 100px;
-      }
-      button {
-          color: white;
-      }
-      .remove{
-          transition: 0.6s;
-          background: #ef5350;
-          border: none;
-          padding: 10px;
-          cursor: pointer;
-          outline: none;
-      }
-      .buy {
-          transition: 0.6s;
-          background: #8BC34A;
-      }
-      .buy:hover {
-          background: #AED581;
-      }
-      .remove:hover{
-          background: red;
-      }
-      tr.mat-footer-row {
-        font-weight: bold;
+  width: 70%;
+  margin-top: 20px;
+  height: 90vh;
+  background: white;
+  position: relative;
+  left: 50%;
+  transform: translate(-50%);
 
-      }
-     
-      .mat-table-sticky {
-        border-top: 1px solid #e0e0e0;
-      }
-    .fa-long-arrow-alt-left {
-      position: absolute;
-      font-size: 50px;
-      cursor: pointer;
-      color: white;
-      left: -4%;
-    }
+  .example-container {
+    height: 100%;
+    overflow: auto;
+  }
+
+  table {
+    width: 100%;
+  }
+  img {
+    height: 100px;
+  }
+  button {
+    color: white;
+  }
+  .remove {
+    transition: 0.6s;
+    background: #ef5350;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    outline: none;
+  }
+  .buy {
+    transition: 0.6s;
+    background: #8bc34a;
+  }
+  .buy:hover {
+    background: #aed581;
+  }
+  .remove:hover {
+    background: red;
+  }
+  tr.mat-footer-row {
+    font-weight: bold;
+  }
+
+  .mat-table-sticky {
+    border-top: 1px solid #e0e0e0;
+  }
+  .fa-long-arrow-alt-left {
+    position: absolute;
+    font-size: 50px;
+    cursor: pointer;
+    color: white;
+    left: -4%;
+  }
 }

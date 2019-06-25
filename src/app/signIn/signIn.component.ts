@@ -2,6 +2,8 @@ import { Component, OnInit } from "@angular/core";
 import { FormGroup, FormBuilder, Validators } from "@angular/forms";
 import { LocalStorageService } from "../main.service";
 import { Router, ActivatedRoute } from "@angular/router";
+import { HttpClient } from "@angular/common/http";
+import { config } from "rxjs";
 
 @Component({
   selector: "app-sign-in",
@@ -19,7 +21,8 @@ export class SignInComponent implements OnInit {
     private formBuilder: FormBuilder,
     private localStore: LocalStorageService,
     private route: Router,
-    private activ: ActivatedRoute
+    private activ: ActivatedRoute,
+    private _http: HttpClient
   ) {
     this.createForm();
   }

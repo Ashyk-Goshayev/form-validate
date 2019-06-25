@@ -4,9 +4,9 @@ import { LocalStorageService } from "../main.service";
 import { Router } from "@angular/router";
 import { Observable } from "rxjs";
 import { BookServiceService } from "../book-service.service";
-import { Book } from "../interfaces";
+import { Book, Tile } from "../interfaces";
 import { environment } from "../../environments/environment";
-import { Tile } from "../interfaces";
+import { HttpClient } from "@angular/common/http";
 
 @Component({
   selector: "app-books",
@@ -18,19 +18,20 @@ export class BooksComponent implements OnInit {
   allTiles: Tile[] = [];
   tiles: Tile[] = [];
   pageSizeOptions: number[] = [10];
-  ex: number[] = [];
+  arrayOfBooks: number[] = [];
   pageIndex: number = 0;
   lowValue: number = 0;
   highValue: number = 10;
   cartLength: number = 0;
   pageEvent: PageEvent;
   showContent: Observable<Tile>;
-  myCart: any[] = [];
+  myCart: Book[] = [];
   books: Book[];
   constructor(
     private localStore: LocalStorageService,
     private router: Router,
-    private service: BookServiceService
+    private service: BookServiceService,
+    private _http: HttpClient
   ) {
     this.bookInfo();
     this.tiles = this.allTiles;
@@ -48,19 +49,18 @@ export class BooksComponent implements OnInit {
   addToCart(cart) {
     this.service.sendBookInfo(cart);
     if (localStorage.cart !== undefined) {
-      this.ex = JSON.parse(localStorage.cart);
-      this.ex.unshift(cart);
-      return (localStorage.cart = JSON.stringify(this.ex));
+      this.arrayOfBooks = JSON.parse(localStorage.cart);
+      this.arrayOfBooks.unshift(cart);
+      return (localStorage.cart = JSON.stringify(this.arrayOfBooks));
     }
-    this.ex.unshift(cart);
-    return (localStorage.cart = JSON.stringify(this.ex));
+    this.arrayOfBooks.unshift(cart);
+    return (localStorage.cart = JSON.stringify(this.arrayOfBooks));
   }
 
   setPageSizeOptions(setPageSizeOptionsInput: string) {
-    alert(setPageSizeOptionsInput);
     this.pageSizeOptions = setPageSizeOptionsInput.split(",").map(str => +str);
   }
-  navigate(event) {
+  navigateToCurrentBook(event) {
     this.service.openCurrentBook(event);
     this.router.navigate(["bookInfo", event.id]);
   }

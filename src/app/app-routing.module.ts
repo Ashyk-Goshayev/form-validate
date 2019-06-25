@@ -1,6 +1,5 @@
-import { NgModule, Component } from "@angular/core";
+import { NgModule } from "@angular/core";
 import { Routes, RouterModule } from "@angular/router";
-import { HomeComponent } from "./home/home.component";
 import { SignInComponent } from "./signIn/signIn.component";
 import { RegisterComponent } from "./register/register.component";
 import { BooksComponent } from "./books/books.component";
@@ -10,10 +9,10 @@ import { CartComponent } from "./cart/cart.component";
 import { NewBookComponent } from "./new-book/new-book.component";
 import { ProfileComponent } from "./profile/profile.component";
 import { ShopGuardsService } from "./guards/shop-guards.service";
-
-const routes: Routes = [
+export const routes: Routes = [
   { path: "signIn", component: SignInComponent },
   { path: "register", component: RegisterComponent },
+
   {
     path: "books",
     component: BooksComponent,
@@ -21,13 +20,14 @@ const routes: Routes = [
     runGuardsAndResolvers: "always"
   },
   {
-    path: "admin",
-    //   loadChildren: "./app/admin/admin.module#AdminModule"
-    // },
-    component: AdminComponent,
-    canActivate: [AuthGuard],
-    runGuardsAndResolvers: "always"
+    path: "",
+    loadChildren: () =>
+      import("./admin/admin.module").then(mod => mod.AdminModule)
   },
+  //   component: AdminComponent,
+  //   canActivate: [AuthGuard],
+  //   runGuardsAndResolvers: "always"
+  // },
   {
     path: "cart",
     component: CartComponent,

@@ -1,0 +1,47 @@
+<div class="addBook">
+  <form [formGroup]="BooksForm">
+    <div class="form-group">
+      <div class="top">
+        <div>
+          <label for="name">Name: </label>
+          <input formControlName="name" name="name" placeholder="Name" />
+        </div>
+        <div>
+          <label for="about">About: </label>
+          <input formControlName="about" name="about" placeholder="about" />
+        </div>
+      </div>
+      <div class="top">
+        <div>
+          <label for="price">Price: </label>
+          <input
+            formControlName="price"
+            type="number"
+            name="price"
+            placeholder="price"
+          />
+        </div>
+        <div>
+          <img src="{{ photoOfBook }}" *ngIf="showImage" />
+          <label for="file" class="upload" *ngIf="hideLogo"
+            ><i class="fas fa-cloud-upload-alt"></i
+            ><strong>Choose an image</strong></label
+          >
+          <input
+            type="file"
+            name="file"
+            (change)="getURL($event.target)"
+            class="inputfile"
+          />
+        </div>
+      </div>
+      <ng-container *ngIf="this._mainService.isEditButton; else elseTemplate">
+        <button type="submit" (click)="addBook()">add</button>
+      </ng-container>
+      <ng-template #elseTemplate>
+        <button type="submit" (click)="editCurrentBook()">confirm</button>
+      </ng-template>
+    </div>
+  </form>
+</div>
+<div class="layer"></div>

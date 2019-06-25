@@ -1,10 +1,12 @@
 import { Injectable } from "@angular/core";
 import { ToastrService } from "ngx-toastr";
-import { Price, Admin, User } from "./interfaces";
+import { Price, Admin, User, Book, Transaction } from "./interfaces";
 import { Router } from "@angular/router";
 import { __param } from "tslib";
 import { environment } from "../environments/environment";
-
+import { Subject } from "rxjs";
+import { MatTableDataSource } from "@angular/material/table";
+import { HttpClient } from "@angular/common/http";
 @Injectable({
   providedIn: "root"
 })
@@ -22,7 +24,15 @@ export class LocalStorageService {
   isAdminLogin: boolean = false;
   isSuccess: boolean = false;
   id: number;
-  constructor(private toastr: ToastrService, private router: Router) {
+  isEditButton: boolean = true;
+  switchBooksPop: boolean = false;
+  switchEditPop: boolean = false;
+
+  constructor(
+    private _toastr: ToastrService,
+    private router: Router,
+    private http: HttpClient
+  ) {
     this.arrayOfUsers = [];
     this.getData().then(users => (this.users = users));
     if (
@@ -41,6 +51,45 @@ export class LocalStorageService {
     }
   }
 
+  async remove(item: Book) {
+    let response = await fetch(`${environment.apiUrl}books/${item.id}`, {
+      method: "DELETE"
+    });
+    if (response.ok) {
+      return fetch(`${environment.apiUrl}books`).then(item => item.json());
+    }
+  }
+
+  addBook(
+    BooksForm: { name: string; about: string; price: number },
+    img: string
+  ) {
+    if (!BooksForm.name || !BooksForm.price) {
+      this._toastr.error("Fill empty inputs", "WARNING");
+      return;
+    }
+    return fetch(`${environment.apiUrl}books`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(Object.assign(BooksForm, { image: img }))
+    }).then(() => {
+      this._toastr.success("new book added", "Success");
+    });
+  }
+  editBook() {
+    if (!this.switchEditPop) {
+      return (this.switchEditPop = true);
+    }
+    return (this.switchEditPop = false);
+  }
+  openBook() {
+    if (!this.switchBooksPop) {
+      return (this.switchBooksPop = true);
+    }
+    return (this.switchBooksPop = false);
+  }
   getData() {
     return fetch(`${environment.apiUrl}users`).then(prom => prom.json());
   }
@@ -56,7 +105,7 @@ export class LocalStorageService {
     if (isSameUser.length >= 1) {
       this.isSuccess = false;
       this.hideCart = false;
-      return this.toastr.error("User exist", "WARNING!");
+      return this._toastr.error("User exist", "WARNING!");
     }
     if (testEmail.test(formInput.email) && testPass.test(formInput.password)) {
       if (formInput.password === formInput.passwordRepeat) {
@@ -75,18 +124,18 @@ export class LocalStorageService {
         }).then(() =>
           this.getData().then(users => {
             this.users = users;
-            this.toastr.success("Registration passed", "SUCCESS");
+            this._toastr.success("Registration passed", "SUCCESS");
           })
         );
       } else {
         // this.isSuccess = false
         // this.hideCart = false
-        this.toastr.error("Passwords do not match", "WARNING!");
+        this._toastr.error("Passwords do not match", "WARNING!");
       }
     } else {
       // this.isSuccess = false
       // this.hideCart = false
-      this.toastr.error("email should be like example@gmail.com", "WARNING!");
+      this._toastr.error("email should be like example@gmail.com", "WARNING!");
     }
   }
 
@@ -107,12 +156,9 @@ export class LocalStorageService {
           this.hideCart = true;
           this.isCorrectSign = true;
           this.hide = false;
-          this.toastr.success(`Welcome `, "SUCCESS");
+          this._toastr.success(`Welcome `, "SUCCESS");
         } else {
-          // this.hideCart = false
-          // this.isCorrectSign = false
-          // this.hide = true
-          this.toastr.error("email or password is wrong", "WARNING!");
+          this._toastr.error("email or password is wrong", "WARNING!");
         }
       } else if (
         this.admin.email === inputForm.email &&
@@ -124,13 +170,10 @@ export class LocalStorageService {
         this.hideCart = false;
         this.hide = false;
         this.isAdminLogin = true;
-        this.toastr.success(`Welcome admin`, "SUCCESS");
+        this._toastr.success(`Welcome admin`, "SUCCESS");
       }
     } else {
-      // this.hideCart = false
-      // this.isCorrectSign = false
-      // this.hide = true
-      this.toastr.error("you dont have accaunt", "WARNING!");
+      this._toastr.error("you dont have accaunt", "WARNING!");
     }
   }
 }

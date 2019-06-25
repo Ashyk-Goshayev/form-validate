@@ -21,7 +21,12 @@ export class BookServiceService {
   sendText = this.text.asObservable();
   private currentUser: Subject<User> = new Subject<User>();
   observableUser = this.currentUser.asObservable();
-  constructor(private http: HttpClient) {}
+  private editCurrentBook: Subject<Book> = new Subject<Book>();
+  observableEditBook = this.editCurrentBook.asObservable();
+  constructor() {}
+  getBookValue(book: Book) {
+    this.editCurrentBook.next(book);
+  }
   sendCurrentUser(user: User) {
     this.currentUser.next(user);
   }

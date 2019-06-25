@@ -1,104 +1,36 @@
-<div class="layer" [ngStyle]="{ display: isDisplayed }"></div>
-<div class="layer" [ngStyle]="{ display: isDisplayedPop }"></div>
-<div class="layer" [ngStyle]="{ display: editUser }"></div>
-<div class="layer" [ngStyle]="{ display: newBook }"></div>
-<div (click)="openBook()" [ngStyle]="{ display: newBook }" class="for-book">
+<div class="layer" *ngIf="switchEdit"></div>
+<div class="layer" *ngIf="switch"></div>
+<div class="layer" *ngIf="switchPop"></div>
+<div class="exit" (click)="openDialog()" *ngIf="switch">
   X
 </div>
-<div class="exit" (click)="togglePop()" [ngStyle]="{ display: isDisplayed }">
+<div class="exit" (click)="togglePop()" *ngIf="switchPop">
   X
 </div>
-<div
-  class="exit"
-  (click)="editValue(element)"
-  [ngStyle]="{ display: editUser }"
->
+<div class="exit" (click)="openBook()" *ngIf="this._mainService.switchBooksPop">
   X
 </div>
-<div class="btns">
+<div class="exit" (click)="editValue(element)" *ngIf="switchEdit">
+  X
+</div>
+<!-- <div *ngIf="this._mainService.switchBooksPop">
+  <app-pop-for-books></app-pop-for-books>
+</div> -->
+
+<!-- <div class="btns">
   <button (click)="togglePop()">Add User</button>
   <button (click)="enableBooks()">List Of Books</button>
   <button (click)="enableUsers()">Users</button>
   <button (click)="openBook()">Add New Book</button>
 </div>
-
-<div class="addBook" [ngStyle]="{ display: newBook }">
-  <form [formGroup]="exampleForm">
-    <div class="form-group">
-      <div class="top">
-        <div>
-          <label for="name">Name: </label>
-          <input
-            formControlName="name"
-            value="{{ bookName }}"
-            name="name"
-            placeholder="Name"
-          />
-        </div>
-        <div>
-          <label for="about">About: </label>
-          <input
-            formControlName="about"
-            value="{{ bookAbout }}"
-            name="about"
-            placeholder="about"
-          />
-        </div>
-      </div>
-      <div class="top">
-        <div>
-          <label for="price">Price: </label>
-          <input
-            formControlName="price"
-            value="{{ bookPrice }}"
-            type="number"
-            name="price"
-            placeholder="price"
-          />
-        </div>
-        <div>
-          <img src="{{ photoOfBook }}" [ngStyle]="{ opacity: opacity }" />
-          <label for="file" class="upload" [ngStyle]="{ display: uploaded }"
-            ><i class="fas fa-cloud-upload-alt"></i
-            ><strong>Choose an image</strong></label
-          >
-          <input
-            type="file"
-            name="file"
-            (change)="getURL($event.target)"
-            class="inputfile"
-          />
-        </div>
-      </div>
-      <ng-container *ngIf="bool; else elseTemplate">
-        <button type="submit" (click)="addBook()">add</button>
-      </ng-container>
-      <ng-template #elseTemplate>
-        <button type="submit" (click)="editCurrentBook()">confirm</button>
-      </ng-template>
-    </div>
-  </form>
-</div>
-
-<div class="pop" [ngStyle]="{ display: isDisplayedPop }">
-  <h2 mat-dialog-title>Delete all</h2>
-  <mat-dialog-content>Are you sure?</mat-dialog-content>
-  <mat-dialog-actions>
-    <button mat-button (click)="openDialog(this)">No</button>
-    <!-- The mat-dialog-close directive optionally accepts a value as a result for the dialog. -->
-    <button mat-button (click)="deleteRow()">Yes</button>
-  </mat-dialog-actions>
-</div>
-
-<form class="popup" [ngStyle]="{ display: editUser }">
+<form class="popup" *ngIf="switchEdit">
   <mat-form-field>
     <input matInput value="{{ loginValue }}" placeholder="email" #email_1 />
   </mat-form-field>
-
   <mat-form-field>
     <input
       matInput
-      value="{{ passValue }}"
+      value="{{ passwordValue }}"
       type="password"
       placeholder="password"
       #password_1
@@ -111,9 +43,18 @@
   >
     Confirm
   </button>
-</form>
+</form> -->
+<div class="pop" *ngIf="switch">
+  <h2 mat-dialog-title>Delete all</h2>
+  <mat-dialog-content>Are you sure?</mat-dialog-content>
+  <mat-dialog-actions>
+    <button mat-button (click)="openDialog(this)">No</button>
+    <!-- The mat-dialog-close directive optionally accepts a value as a result for the dialog. -->
+    <button mat-button (click)="deleteRow()">Yes</button>
+  </mat-dialog-actions>
+</div>
 
-<form class="popup" [ngStyle]="{ display: isDisplayed }">
+<!-- <form class="popup" *ngIf="switchPop">
   <mat-form-field>
     <input matInput placeholder="email" #email />
   </mat-form-field>
@@ -128,58 +69,16 @@
   >
     Add
   </button>
-</form>
-<div
-  class="example-container mat-elevation-z7"
-  [ngStyle]="{ display: showBooks }"
->
-  <table mat-table class="tab" [dataSource]="dataSource_2">
-    <!-- Item Column -->
-    <ng-container matColumnDef="id">
-      <th mat-header-cell *matHeaderCellDef>ID</th>
-      <td mat-cell *matCellDef="let transaction">{{ transaction.id }}</td>
-      <td mat-footer-cell *matFooterCellDef>Total</td>
-    </ng-container>
-
-    <!-- Cost Column -->
-    <ng-container matColumnDef="image">
-      <th mat-header-cell *matHeaderCellDef>image</th>
-      <td mat-cell *matCellDef="let transaction">
-        <img src="{{ transaction.image }}" alt="cfgfg" />
-      </td>
-      <td mat-footer-cell *matFooterCellDef>{{ transactions.length }}</td>
-    </ng-container>
-    <ng-container matColumnDef="name">
-      <th mat-header-cell *matHeaderCellDef>Name</th>
-      <td mat-cell *matCellDef="let transaction">{{ transaction.name }}</td>
-      <td mat-footer-cell *matFooterCellDef>Total Price</td>
-    </ng-container>
-    <ng-container matColumnDef="price">
-      <th mat-header-cell *matHeaderCellDef>Price</th>
-      <td mat-cell *matCellDef="let transaction">
-        {{ transaction.price | currency }}
-      </td>
-      <td mat-footer-cell *matFooterCellDef>{{ getTotalCost() | currency }}</td>
-    </ng-container>
-    <ng-container matColumnDef="buttons">
-      <th mat-header-cell *matHeaderCellDef>Actions</th>
-      <td mat-cell *matCellDef="let transaction; let i = index">
-        <button (click)="remove(transaction, i)">Remove</button>
-        <button (click)="editBook(transaction)">Edit</button>
-      </td>
-      <td mat-footer-cell *matFooterCellDef></td>
-    </ng-container>
-
-    <tr mat-header-row *matHeaderRowDef="displayedColumnss"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumnss"></tr>
-    <tr mat-footer-row *matFooterRowDef="displayedColumnss; sticky: true"></tr>
-  </table>
-</div>
+</form> -->
+<!-- <div *ngIf="enableContent">
+  <app-list-of-books></app-list-of-books>
+</div> -->
 <table
   mat-table
   [dataSource]="dataSource"
   class="mat-elevation-z8 tam"
   [ngStyle]="{ display: showUsers }"
+  *ngIf="!enableContent"
 >
   <!-- Checkbox Column -->
   <ng-container matColumnDef="select">

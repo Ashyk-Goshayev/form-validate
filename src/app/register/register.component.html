@@ -1,25 +1,44 @@
-<ng-container *ngIf="true">
-    <div class="container">
-        <form [formGroup]="exampleForm">
-          <div class="form-group">
-              <div class="logo">
-                  <input type="file" (change)='getURL($event.target)'>
-                  <div class="log">
-                        <img src="{{image}}" alt="">
-                        <i [ngStyle]="{'display': uploadedImg}" class="fas fa-plus-circle"></i>
-                  </div>
-              </div>
-              <input class="form-control" formControlName="email" placeholder="example@mail.com" required minlength="3">
-              <div class="pass">
-                  <input class="form-control" type="{{isVisible}}" formControlName="password" placeholder="Password" required><i (click)='showPassword()' class="fas fa-lock"></i>
-              </div>
-              <div class="pass">
-                  <input class="form-control" type="{{isVisible}}" formControlName="passwordRepeat" placeholder="confirm password" required><i (click)='showPassword()' class="fas fa-lock"></i>
-              </div>
+<ng-container>
+  <div class="container">
+    <form [formGroup]="exampleForm">
+      <div class="form-group">
+        <div class="logo">
+          <input type="file" (change)="getURL($event.target)" />
+          <div class="log">
+            <img src="{{ image }}" alt="" />
+            <i
+              [ngStyle]="{ display: uploadedImg }"
+              class="fas fa-plus-circle"
+            ></i>
           </div>
-          <button type="submit" class="reg" (click)="onsubmit()" >Register</button>
-        
-        </form>
+        </div>
+        <input
+          class="form-control"
+          formControlName="email"
+          placeholder="example@mail.com"
+          required
+          minlength="3"
+        />
+        <div class="pass">
+          <input
+            class="form-control"
+            type="{{ isVisible }}"
+            formControlName="password"
+            placeholder="Password"
+            required
+          /><i (click)="showPassword()" class="fas fa-lock"></i>
+        </div>
+        <div class="pass">
+          <input
+            class="form-control"
+            type="{{ isVisible }}"
+            formControlName="passwordRepeat"
+            placeholder="confirm password"
+            required
+          /><i (click)="showPassword()" class="fas fa-lock"></i>
+        </div>
       </div>
+      <button type="submit" class="reg" (click)="onsubmit()">Register</button>
+    </form>
+  </div>
 </ng-container>
-

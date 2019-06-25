@@ -12,7 +12,7 @@ import { BookServiceService } from "../book-service.service";
   styleUrls: ["./profile.component.scss"]
 })
 export class ProfileComponent implements OnInit {
-  image: any;
+  image: string;
   name: string;
   email: string;
   password: string;
@@ -20,12 +20,12 @@ export class ProfileComponent implements OnInit {
   showEditImg: boolean = true;
   editForm: FormGroup;
   showEdit: string = "none";
-  switch: boolean = true;
+  switch: boolean = false;
   currentEmail: string;
   currentPassword: string;
   id: number;
   file: File = null;
-  img: any;
+  img: string;
   constructor(
     private service: LocalStorageService,
     private _location: Location,
@@ -41,12 +41,10 @@ export class ProfileComponent implements OnInit {
   }
 
   editPopUp() {
-    if (this.switch) {
-      this.showEdit = "flex";
-      this.switch = false;
-    } else {
-      this.showEdit = "none";
+    if (!this.switch) {
       this.switch = true;
+    } else {
+      this.switch = false;
     }
   }
 
@@ -58,8 +56,43 @@ export class ProfileComponent implements OnInit {
     }
     reader.onload = () => {
       this.showEditImg = false;
-      this.img = reader.result;
+      this.img = <string>reader.result;
     };
+  }
+  editUser() {
+    return fetch(
+      `${environment.apiUrl}users/${
+        JSON.parse(localStorage.currentUser)[0].id
+      }`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(
+          Object.assign(this.editForm.value, { image: this.img })
+        )
+      }
+    );
+  }
+  changeValues() {
+    localStorage.currentUser = JSON.stringify([
+      Object.assign(
+        { id: JSON.parse(localStorage.currentUser)[0].id },
+        this.editForm.value,
+        { image: this.img }
+      )
+    ]);
+    this.email = this.editForm.value.email;
+    this.name = this.editForm.value.email.split(/@/g)[0];
+    if (this.img !== undefined) {
+      this.showImg = false;
+      this.image = this.img;
+    } else {
+      this.showImg = true;
+    }
+    this.toastr.success("Your data edited");
+    this.bookService.sendCurrentUser(JSON.parse(localStorage.currentUser));
   }
   async confirm() {
     var testEmail = /^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
@@ -94,39 +127,8 @@ export class ProfileComponent implements OnInit {
               this.editForm.value.email ||
             sameUser.length === 0
           ) {
-            fetch(
-              `${environment.apiUrl}users/${
-                JSON.parse(localStorage.currentUser)[0].id
-              }`,
-              {
-                method: "PUT",
-                headers: {
-                  "Content-Type": "application/json"
-                },
-                body: JSON.stringify(
-                  Object.assign(this.editForm.value, { image: this.img })
-                )
-              }
-            ).then(() => {
-              localStorage.currentUser = JSON.stringify([
-                Object.assign(
-                  { id: JSON.parse(localStorage.currentUser)[0].id },
-                  this.editForm.value,
-                  { image: this.img }
-                )
-              ]);
-              this.email = this.editForm.value.email;
-              this.name = this.editForm.value.email.split(/@/g)[0];
-              if (this.img !== undefined) {
-                this.showImg = false;
-                this.image = this.img;
-              } else {
-                this.showImg = true;
-              }
-              this.toastr.success("Your data edited");
-              this.bookService.sendCurrentUser(
-                JSON.parse(localStorage.currentUser)
-              );
+            this.editUser().then(() => {
+              this.changeValues();
               this.editPopUp();
             });
           } else {

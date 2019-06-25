@@ -1,4 +1,4 @@
-<div class="popUp" [ngStyle]="{ display: showEdit }">
+<div class="popUp" *ngIf="switch">
   <form [formGroup]="editForm">
     <div class="file">
       <input type="file" accept="image/*" (change)="getURL($event.target)" />

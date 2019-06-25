@@ -3,11 +3,11 @@ import { SelectionModel } from "@angular/cdk/collections";
 import { MatTableDataSource } from "@angular/material/table";
 import { LocalStorageService } from "../main.service";
 import { MatPaginator } from "@angular/material/paginator";
-import { FormGroup, FormBuilder, FormControl } from "@angular/forms";
-import { ToastrService } from "ngx-toastr";
 import { environment } from "../../environments/environment";
 import { BookServiceService } from "../book-service.service";
 import { PeriodicElement, Transaction, User } from "../interfaces";
+import { ToastrService } from "ngx-toastr";
+import { Router } from "@angular/router";
 
 let ELEMENT_DATA: PeriodicElement[] = [];
 
@@ -17,16 +17,15 @@ let ELEMENT_DATA: PeriodicElement[] = [];
   styleUrls: ["./admin.component.scss"]
 })
 export class AdminComponent implements OnInit {
-  isDisplayed: string = "none"; // for add User
-  isDisplayedPop: string = "none"; // for delete user
-  switch: boolean = true;
-  switchPop: boolean = true;
+  // isDisplayed: string = "none"; // for add User
+  //isDisplayedPop: string = "none"; // for delete user
+  switch: boolean = false;
+  switchPop: boolean = false;
   position: number = 0;
   deleteUser: object;
-  editUser: string = "none"; // for edit user
-  switchEdit: boolean = true;
-  newBook: string = "none"; // for adding new book
-  switchBookPop: boolean = true;
+  //editUser: string = "none"; // for edit user
+  switchEdit: boolean = false;
+
   displayedColumns: string[] = [
     "select",
     "position",
@@ -38,108 +37,16 @@ export class AdminComponent implements OnInit {
   ];
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   dataSource = new MatTableDataSource<PeriodicElement>(ELEMENT_DATA);
-  dataSource_2 = new MatTableDataSource<Transaction>();
   selection = new SelectionModel<PeriodicElement>(true, []);
-  passValue: string;
+  passwordValue: string;
   loginValue: string;
-  exampleForm: FormGroup;
   deleteAll: string;
-  photoOfBook: any;
-  bookName: string;
-  bookAbout: string;
-  bookPrice: number;
-  bool: boolean;
   pageSizeOptions: number[] = [10];
-  IdForEdit: number;
-  showBooks: string = "none";
-  switchBooks: boolean = true;
+
   showUsers: string = "";
   row: User;
-  file: File = null;
-  image: string;
-  uploaded: string;
-  opacity: string;
+
   isSorted: boolean = true;
-
-  enableBooks() {
-    this.showBooks = "block";
-    this.showUsers = "none";
-  }
-  enableUsers() {
-    this.showBooks = "none";
-    this.showUsers = "";
-  }
-
-  async remove(item, i) {
-    let response = await fetch(`${environment.apiUrl}books/${item.id}`, {
-      method: "DELETE"
-    });
-    if (response.ok) {
-      fetch(`${environment.apiUrl}books`)
-        .then(item => item.json())
-        .then(elem => (this.transactions = elem))
-        .then(
-          () =>
-            (this.dataSource_2 = new MatTableDataSource<Transaction>(
-              this.transactions
-            ))
-        );
-    }
-  }
-  switchBook() {
-    if (this.switchBookPop) {
-      this.newBook = "flex";
-      this.switchBookPop = false;
-    } else {
-      this.newBook = "none";
-      this.switchBookPop = true;
-    }
-  }
-  editBook(item) {
-    this.bookName = item.name;
-    this.exampleForm.value.name = item.name;
-    this.bookAbout = item.about;
-    this.exampleForm.value.about = item.about;
-    this.bookPrice = item.price;
-    this.exampleForm.value.price = item.price;
-    this.photoOfBook = item.image;
-    this.exampleForm.value.image = item.image;
-    this.image = item.image;
-    this.IdForEdit = item.id;
-    this.bool = false;
-    this.switchBook();
-  }
-  async editCurrentBook() {
-    if (!this.exampleForm.value.name || !this.exampleForm.value.price) {
-      this.toastr.error("Fill empty inputs", "WARNING");
-      return;
-    }
-
-    let response = await fetch(`${environment.apiUrl}books/${this.IdForEdit}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(
-        Object.assign(this.exampleForm.value, { image: this.image })
-      )
-    });
-    if (response.ok) {
-      let res = await fetch(`${environment.apiUrl}books`)
-        .then(item => item.json())
-        .then(element => (this.transactions = element))
-        .then(
-          () =>
-            (this.dataSource_2 = new MatTableDataSource<Transaction>(
-              this.transactions
-            ))
-        );
-      this.uploaded = "flex";
-      this.opacity = "0";
-      this.switchBook();
-      this.toastr.success("book edited", "Success");
-    }
-  }
 
   showSelected() {
     if (this.selection.selected.length > 0) {
@@ -148,13 +55,7 @@ export class AdminComponent implements OnInit {
       this.deleteAll = "none";
     }
   }
-  displayedColumnss = ["id", "image", "name", "price", "buttons"];
-  transactions: Transaction[] = [];
-  getTotalCost() {
-    return this.transactions
-      .map(t => t.price)
-      .reduce((acc, value) => acc + value, 0);
-  }
+
   isAllSelected() {
     const numSelected = this.selection.selected.length;
     const numRows = this.dataSource.data.length;
@@ -177,54 +78,7 @@ export class AdminComponent implements OnInit {
       this.selection.isSelected(row) ? "deselect" : "select"
     } row ${row.position + 1}`;
   }
-  addBook() {
-    if (
-      this.exampleForm.value.name !== null &&
-      this.exampleForm.value.price !== null
-    ) {
-      fetch(`${environment.apiUrl}books`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(
-          Object.assign(this.exampleForm.value, { image: this.image })
-        )
-      }).then(() =>
-        fetch(`${environment.apiUrl}books`)
-          .then(item => item.json())
-          .then(books => (this.transactions = books))
-          .then(
-            () =>
-              (this.dataSource_2 = new MatTableDataSource<Transaction>(
-                this.transactions
-              ))
-          )
-      );
 
-      this.uploaded = "flex";
-      this.opacity = "0";
-      this.openBook();
-      this.toastr.success("new book added", "Success");
-    } else {
-      this.toastr.error("Fill empty inputs", "WARNING");
-    }
-  }
-
-  getURL(img) {
-    const reader = new FileReader();
-    this.file = img.files[0] as File;
-    if (this.file) {
-      reader.readAsDataURL(this.file);
-    }
-    reader.onload = () => {
-      this.image = <string>reader.result;
-      this.photoOfBook = reader.result;
-      this.uploaded = "none";
-      this.opacity = "1";
-      this.toastr.success("Loaded");
-    };
-  }
   async deleteAllSelected() {
     const users = this.selection.selected;
     let response = null;
@@ -244,7 +98,10 @@ export class AdminComponent implements OnInit {
       this.dataSource.paginator = this.paginator;
     }
   }
-
+  openBook() {
+    this._mainService.isEditButton = true;
+    this._mainService.openBook();
+  }
   sortByNo() {
     if (this.isSorted) {
       ELEMENT_DATA = ELEMENT_DATA.sort((a, b) => {
@@ -297,33 +154,22 @@ export class AdminComponent implements OnInit {
   }
 
   editValue(row = null) {
-    if (this.switchEdit && row) {
-      this.editUser = "flex";
-      this.switchEdit = false;
-      this.passValue = row.password;
+    if (!this.switchEdit) {
+      this.switchEdit = true;
+      this.passwordValue = row.password;
       this.loginValue = row.email;
       this.position = row.position;
       this.row = row;
     } else {
-      this.editUser = "none";
-      this.switchEdit = true;
+      this.switchEdit = false;
     }
   }
 
-  openBook() {
-    this.bookName = null;
-    this.bookAbout = null;
-    this.bookPrice = null;
-    this.bool = true;
-    this.switchBook();
-  }
   togglePop() {
-    if (this.switch) {
-      this.isDisplayed = "flex";
-      this.switch = false;
+    if (!this.switchPop) {
+      this.switchPop = true;
     } else {
-      this.isDisplayed = "none";
-      this.switch = true;
+      this.switchPop = false;
     }
   }
   confirm(em, pass) {
@@ -336,7 +182,9 @@ export class AdminComponent implements OnInit {
         Object.assign({ email: em, password: pass }, { image: this.row.image })
       )
     }).then(() =>
-      this.localStore.getData().then(users => (this.localStore.users = users))
+      this._mainService
+        .getData()
+        .then(users => (this._mainService.users = users))
     );
     this.editCurrentUser({
       email: em,
@@ -347,7 +195,7 @@ export class AdminComponent implements OnInit {
     this.editValue();
   }
   async openSnackBar(email: string, password: string) {
-    this.localStore.getData().then(users => {
+    this._mainService.getData().then(users => {
       const isSameUser = users.filter(item => item.email === email);
       if (isSameUser.length === 0) {
         fetch(`${environment.apiUrl}users`, {
@@ -357,43 +205,37 @@ export class AdminComponent implements OnInit {
           },
           body: JSON.stringify({ email: email, password: password })
         }).then(() => {
-          this.localStore
+          this._mainService
             .getData()
-            .then(users => (this.localStore.users = users));
+            .then(users => (this._mainService.users = users));
           this.addUser({ email, password });
           this.togglePop();
         });
       } else {
-        this.toastr.error("User exist", "WARNING");
+        this._toastr.error("User exist", "WARNING");
       }
     });
   }
   constructor(
-    private localStore: LocalStorageService,
-    private formBuilder: FormBuilder,
-    private toastr: ToastrService,
-    private bookService: BookServiceService
-  ) {
-    this.createForm();
+    private _mainService: LocalStorageService,
+    private _toastr: ToastrService,
+    private _bookService: BookServiceService,
+    private _router: Router
+  ) {}
+  enableContent: boolean = false;
+  enableBooks() {
+    return (this.enableContent = true);
   }
-
+  enableUsers() {
+    return (this.enableContent = false);
+  }
   openDialog(row = null) {
-    this.deleteUser = row;
-
-    if (this.switchPop) {
-      this.isDisplayedPop = "flex";
-      this.switchPop = false;
+    if (!this.switch && row) {
+      this.deleteUser = row;
+      this.switch = true;
     } else {
-      this.isDisplayedPop = "none";
-      this.switchPop = true;
+      this.switch = false;
     }
-  }
-  createForm() {
-    this.exampleForm = this.formBuilder.group({
-      name: new FormControl(),
-      about: new FormControl(),
-      price: new FormControl()
-    });
   }
 
   addUser(user) {
@@ -441,24 +283,12 @@ export class AdminComponent implements OnInit {
           ))
       )
       .then(() => (this.dataSource.paginator = this.paginator));
-
-    this.bookService.sendText.subscribe(x => {
+    this._bookService.sendText.subscribe(x => {
       this.dataSource = new MatTableDataSource<PeriodicElement>(
         ELEMENT_DATA.filter(item => {
           return item.email.toLowerCase().indexOf(x) > -1;
         })
       );
     });
-    fetch(`${environment.apiUrl}books`)
-      .then(prom => prom.json())
-      .then(item => {
-        this.transactions = item;
-      })
-      .then(
-        () =>
-          (this.dataSource_2 = new MatTableDataSource<Transaction>(
-            this.transactions
-          ))
-      );
   }
 }

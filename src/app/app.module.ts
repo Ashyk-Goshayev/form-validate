@@ -13,46 +13,9 @@ import { LocalStorageService } from "./main.service";
 import { StorageServiceModule } from "angular-webstorage-service";
 import { RegisterComponent } from "./register/register.component";
 import { BookServiceService } from "./book-service.service";
-import {
-  MatAutocompleteModule,
-  MatBadgeModule,
-  MatBottomSheetModule,
-  MatButtonModule,
-  MatButtonToggleModule,
-  MatCardModule,
-  MatCheckboxModule,
-  MatChipsModule,
-  MatDatepickerModule,
-  MatDialogModule,
-  MatDividerModule,
-  MatExpansionModule,
-  MatGridListModule,
-  MatIconModule,
-  MatInputModule,
-  MatListModule,
-  MatMenuModule,
-  MatNativeDateModule,
-  MatPaginatorModule,
-  MatProgressBarModule,
-  MatProgressSpinnerModule,
-  MatRadioModule,
-  MatRippleModule,
-  MatSelectModule,
-  MatSidenavModule,
-  MatSliderModule,
-  MatSlideToggleModule,
-  MatSnackBarModule,
-  MatSortModule,
-  MatStepperModule,
-  MatTableModule,
-  MatTabsModule,
-  MatToolbarModule,
-  MatTooltipModule,
-  MatTreeModule
-} from "@angular/material";
-
+import { HTTP_INTERCEPTORS } from "@angular/common/http";
+import { MyHttpInterceptor } from "./my-http-interceptor";
 import { BooksComponent } from "./books/books.component";
-import { AdminComponent } from "./admin/admin.component";
 import { AuthGuard } from "./auth.guard";
 import { CartComponent } from "./cart/cart.component";
 import { HttpClientModule } from "@angular/common/http";
@@ -64,17 +27,22 @@ import { UserComponent } from "./user/user.component";
 import { ProfileComponent } from "./profile/profile.component";
 import { ShopGuardsService } from "./guards/shop-guards.service";
 import { CommonModule } from "@angular/common";
-
-const routes: Routes = [];
-
+import { ListOfBooksComponent } from "./list-of-books/list-of-books.component";
+import { PopForBooksComponent } from "./pop-for-books/pop-for-books.component";
+// import { AdminRoutingModule } from "./admin/admin-routing.module";
+import { AdminComponent } from "./admin/admin.component";
+import { AdminModule } from "./admin/admin.module";
+import { MaterialModule } from "./materials";
 @NgModule({
   declarations: [
     AppComponent,
+    // PopForBooksComponent,
+    // ListOfBooksComponent,
+    // AdminComponent,
     HomeComponent,
     SignInComponent,
     RegisterComponent,
     BooksComponent,
-    AdminComponent,
     CartComponent,
     CartAsideComponent,
     CartIconComponent,
@@ -84,53 +52,16 @@ const routes: Routes = [];
     ProfileComponent
   ],
   imports: [
+    MaterialModule,
+    AdminModule,
+    CommonModule,
     FormsModule,
     CommonModule,
     BrowserModule,
     AppRoutingModule,
-    MatAutocompleteModule,
-    MatBadgeModule,
-    MatBottomSheetModule,
-    MatButtonModule,
-    MatButtonToggleModule,
-    MatCardModule,
-    MatCheckboxModule,
-    MatChipsModule,
-    MatDatepickerModule,
-    MatDialogModule,
-    MatDividerModule,
-    MatExpansionModule,
-    MatGridListModule,
-    MatIconModule,
-    MatInputModule,
-    MatListModule,
-    MatMenuModule,
-    MatNativeDateModule,
-    MatPaginatorModule,
-    MatProgressBarModule,
-    MatProgressSpinnerModule,
-    MatRadioModule,
-    MatRippleModule,
-    MatSelectModule,
-    MatSidenavModule,
-    MatSliderModule,
-    MatSlideToggleModule,
-    MatSnackBarModule,
-    MatSortModule,
-    MatStepperModule,
-    MatTableModule,
-    MatTabsModule,
-    MatToolbarModule,
-    MatTooltipModule,
-    MatTreeModule,
     HttpClientModule,
     ReactiveFormsModule,
     StorageServiceModule,
-    MatGridListModule,
-    RouterModule.forRoot(routes, { onSameUrlNavigation: "reload" }),
-    MatButtonModule,
-    MatCheckboxModule,
-
     BrowserAnimationsModule,
     ToastrModule.forRoot({
       timeOut: 3000,
@@ -142,7 +73,12 @@ const routes: Routes = [];
     LocalStorageService,
     AuthGuard,
     BookServiceService,
-    ShopGuardsService
+    ShopGuardsService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: MyHttpInterceptor,
+      multi: true
+    }
   ],
   bootstrap: [AppComponent]
 })

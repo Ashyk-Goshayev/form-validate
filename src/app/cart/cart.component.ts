@@ -19,13 +19,14 @@ export class CartComponent implements OnInit {
   switch: boolean = true;
   index: number;
   bookPrice: Transaction;
+  showDeleteActions: boolean = false;
   constructor(
     private service: LocalStorageService,
     private router: Router,
     private bookService: BookServiceService,
     private _location: Location
   ) {
-    if (!localStorage.cart) {
+    if (localStorage.cart !== undefined) {
       this.datasource = JSON.parse(localStorage.cart);
       this.transactions = JSON.parse(localStorage.cart);
     }
@@ -47,16 +48,11 @@ export class CartComponent implements OnInit {
   }
   showPop(element = null, path = null) {
     this.index = path;
-    console.log(path);
-
     this.bookPrice = element;
-    console.log(element);
-    if (this.switch) {
-      this.popUpForRemove = "flex";
-      this.switch = false;
+    if (!this.showDeleteActions) {
+      return (this.showDeleteActions = true);
     } else {
-      this.popUpForRemove = "none";
-      this.switch = true;
+      return (this.showDeleteActions = false);
     }
   }
   remove() {

@@ -20,7 +20,7 @@ export class RegisterComponent {
   image: any;
   constructor(
     private formBuilder: FormBuilder,
-    private localStore: LocalStorageService,
+    private _mainService: LocalStorageService,
     private router: Router
   ) {
     this.createForm();
@@ -32,8 +32,6 @@ export class RegisterComponent {
     this.file = <File>img.files[0];
     if (this.file) {
       reader.readAsDataURL(this.file);
-    } else {
-      alert("no");
     }
     reader.onload = () => {
       this.uploadedImg = "none";
@@ -41,8 +39,8 @@ export class RegisterComponent {
     };
   }
   onsubmit() {
-    this.localStore.onsubmitReg(this.exampleForm.value, this.image);
-    if (this.localStore.isSuccess) {
+    this._mainService.onsubmitReg(this.exampleForm.value, this.image);
+    if (this._mainService.isSuccess) {
       return this.router.navigate(["signIn"]);
     }
   }

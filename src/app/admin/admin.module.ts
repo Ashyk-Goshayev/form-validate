@@ -1,12 +1,13 @@
 import { NgModule } from "@angular/core";
 import { CommonModule } from "@angular/common";
-import { AppComponent } from "../app.component";
-import { RouterModule, Routes } from "@angular/router";
-const routes: Routes = [{ path: "", component: AppComponent }];
-
+import { AdminRoutingModule } from "./admin-routing.module";
+import { AdminComponent } from "./admin.component";
+import { ListOfBooksComponent } from "../list-of-books/list-of-books.component";
+import { PopForBooksComponent } from "../pop-for-books/pop-for-books.component";
+import { MaterialModule } from "../materials";
 @NgModule({
-  declarations: [AppComponent],
-  imports: [CommonModule, RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  declarations: [AdminComponent, ListOfBooksComponent, PopForBooksComponent],
+  imports: [AdminRoutingModule, CommonModule, MaterialModule]
 })
-export class AdminModule {}
+class AdminModule {}
+export { AdminModule };
