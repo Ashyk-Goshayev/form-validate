@@ -100,7 +100,9 @@ export class LocalStorageService {
       this._toastr.error("email should be like example@gmail.com", "WARNING!");
     }
   }
-
+  getToken() {
+    return JSON.parse(localStorage.getItem("book")).name;
+  }
   onsubmitSign(inputForm: { email: string; password: string }) {
     if (this.users != null || this.admin != null) {
       if ((this.users != null && this.admin.email !== inputForm.email) || this.admin.password !== inputForm.password) {

@@ -1,5 +1,5 @@
 import { BrowserModule } from "@angular/platform-browser";
-import { NgModule } from "@angular/core";
+import { NgModule, Injector, ErrorHandler } from "@angular/core";
 import { Routes, RouterModule } from "@angular/router";
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
@@ -31,7 +31,8 @@ import { PopForBooksComponent } from "./pop-for-books/pop-for-books.component";
 import { AdminComponent } from "./admin/admin.component";
 import { AdminModule } from "./admin/admin.module";
 import { MaterialModule } from "./materials";
-
+import { HTTP_INTERCEPTORS } from "@angular/common/http";
+import { InterceptorService } from "./interceptor.service";
 @NgModule({
   declarations: [
     AppComponent,
@@ -52,11 +53,11 @@ import { MaterialModule } from "./materials";
   ],
   imports: [
     MaterialModule,
-
     // AdminModule,
     FormsModule,
     // BrowserModule,
     AppRoutingModule,
+
     HttpClientModule,
     ReactiveFormsModule,
     StorageServiceModule,
@@ -67,7 +68,17 @@ import { MaterialModule } from "./materials";
       preventDuplicates: true
     })
   ],
-  providers: [LocalStorageService, AuthGuard, BookServiceService, ShopGuardsService],
+  providers: [
+    LocalStorageService,
+    AuthGuard,
+    BookServiceService,
+    ShopGuardsService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: InterceptorService,
+      multi: true
+    }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule {}
