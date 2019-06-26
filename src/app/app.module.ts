@@ -13,8 +13,6 @@ import { LocalStorageService } from "./main.service";
 import { StorageServiceModule } from "angular-webstorage-service";
 import { RegisterComponent } from "./register/register.component";
 import { BookServiceService } from "./book-service.service";
-import { HTTP_INTERCEPTORS } from "@angular/common/http";
-import { MyHttpInterceptor } from "./my-http-interceptor";
 import { BooksComponent } from "./books/books.component";
 import { AuthGuard } from "./auth.guard";
 import { CartComponent } from "./cart/cart.component";
@@ -33,12 +31,13 @@ import { PopForBooksComponent } from "./pop-for-books/pop-for-books.component";
 import { AdminComponent } from "./admin/admin.component";
 import { AdminModule } from "./admin/admin.module";
 import { MaterialModule } from "./materials";
+
 @NgModule({
   declarations: [
     AppComponent,
-    // PopForBooksComponent,
-    // ListOfBooksComponent,
-    // AdminComponent,
+    PopForBooksComponent,
+    ListOfBooksComponent,
+    AdminComponent,
     HomeComponent,
     SignInComponent,
     RegisterComponent,
@@ -53,11 +52,10 @@ import { MaterialModule } from "./materials";
   ],
   imports: [
     MaterialModule,
-    AdminModule,
-    CommonModule,
+
+    // AdminModule,
     FormsModule,
-    CommonModule,
-    BrowserModule,
+    // BrowserModule,
     AppRoutingModule,
     HttpClientModule,
     ReactiveFormsModule,
@@ -69,17 +67,7 @@ import { MaterialModule } from "./materials";
       preventDuplicates: true
     })
   ],
-  providers: [
-    LocalStorageService,
-    AuthGuard,
-    BookServiceService,
-    ShopGuardsService,
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: MyHttpInterceptor,
-      multi: true
-    }
-  ],
+  providers: [LocalStorageService, AuthGuard, BookServiceService, ShopGuardsService],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

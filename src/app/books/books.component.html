@@ -12,11 +12,6 @@
       </div>
     </mat-grid-tile>
   </mat-grid-list>
-  <mat-paginator
-    [length]="tiles.length"
-    [pageSize]="pageSize"
-    [pageSizeOptions]="pageSizeOptions"
-    (page)="pageEvent = getPaginatorData($event)"
-  >
+  <mat-paginator [length]="tiles.length" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions" (page)="pageEvent = getPaginatorData($event)">
   </mat-paginator>
 </div>

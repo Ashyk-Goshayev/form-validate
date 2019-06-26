@@ -8,6 +8,8 @@ import { BookServiceService } from "../book-service.service";
 import { PeriodicElement, Transaction, User } from "../interfaces";
 import { ToastrService } from "ngx-toastr";
 import { Router } from "@angular/router";
+import { HttpClient } from "@angular/common/http";
+import { isNgTemplate } from "@angular/compiler";
 
 let ELEMENT_DATA: PeriodicElement[] = [];
 
@@ -21,20 +23,12 @@ export class AdminComponent implements OnInit {
   //isDisplayedPop: string = "none"; // for delete user
   switch: boolean = false;
   switchPop: boolean = false;
-  position: number = 0;
-  deleteUser: object;
+  id: number = 0;
+  deleteUser: User;
   //editUser: string = "none"; // for edit user
   switchEdit: boolean = false;
 
-  displayedColumns: string[] = [
-    "select",
-    "position",
-    "image",
-    "email",
-    "password",
-    "delete",
-    "edit"
-  ];
+  displayedColumns: string[] = ["select", "id", "image", "email", "password", "delete", "edit"];
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   dataSource = new MatTableDataSource<PeriodicElement>(ELEMENT_DATA);
   selection = new SelectionModel<PeriodicElement>(true, []);
@@ -63,9 +57,7 @@ export class AdminComponent implements OnInit {
     return numSelected === numRows;
   }
   masterToggle() {
-    this.isAllSelected()
-      ? this.selection.clear()
-      : this.dataSource.data.forEach(row => this.selection.select(row));
+    this.isAllSelected() ? this.selection.clear() : this.dataSource.data.forEach(row => this.selection.select(row));
   }
 
   /** The label for the checkbox on the passed row */
@@ -74,28 +66,17 @@ export class AdminComponent implements OnInit {
       return `${this.isAllSelected() ? "select" : "deselect"} all`;
     }
 
-    return `${
-      this.selection.isSelected(row) ? "deselect" : "select"
-    } row ${row.position + 1}`;
+    return `${this.selection.isSelected(row) ? "deselect" : "select"} row ${row.id + 1}`;
   }
 
   async deleteAllSelected() {
-    const users = this.selection.selected;
-    let response = null;
-    for (const u of users) {
-      response = await fetch(`${environment.apiUrl}users/${u.position}`, {
-        method: "DELETE"
+    for (const user of this.selection.selected) {
+      this._http.delete(`${environment.apiUrl}users/${user.id}`, { observe: "response" }).subscribe(res => {
+        if (!res.ok) return this._toastr.error("Error 201");
+        ELEMENT_DATA.splice(ELEMENT_DATA.indexOf(ELEMENT_DATA.filter(x => x.id === user.id)[0]), 1);
+        this.dataSource = new MatTableDataSource<PeriodicElement>(ELEMENT_DATA);
+        this.dataSource.paginator = this.paginator;
       });
-    }
-    if (response.ok) {
-      for (const u of users) {
-        const el = ELEMENT_DATA.filter(x => {
-          return x.position === u.position;
-        })[0];
-        ELEMENT_DATA.splice(ELEMENT_DATA.indexOf(el), 1);
-      }
-      this.dataSource = new MatTableDataSource<PeriodicElement>(ELEMENT_DATA);
-      this.dataSource.paginator = this.paginator;
     }
   }
   openBook() {
@@ -105,9 +86,9 @@ export class AdminComponent implements OnInit {
   sortByNo() {
     if (this.isSorted) {
       ELEMENT_DATA = ELEMENT_DATA.sort((a, b) => {
-        if (a.position > b.position) {
+        if (a.id > b.id) {
           return -1;
-        } else if (a.position < b.position) {
+        } else if (a.id < b.id) {
           return 1;
         }
         return 0;
@@ -117,9 +98,9 @@ export class AdminComponent implements OnInit {
       this.dataSource.paginator = this.paginator;
     } else {
       ELEMENT_DATA = ELEMENT_DATA.sort((a, b) => {
-        if (a.position < b.position) {
+        if (a.id < b.id) {
           return -1;
-        } else if (a.position > b.position) {
+        } else if (a.id > b.id) {
           return 1;
         }
         return 0;
@@ -130,27 +111,17 @@ export class AdminComponent implements OnInit {
     }
   }
   async deleteRow() {
-    let user;
-    user = this.deleteUser;
-    const response = await fetch(
-      `${environment.apiUrl}users/${user.position}`,
-      {
-        method: "DELETE"
-      }
-    );
-
-    if (response.ok) {
+    this._http.delete(`${environment.apiUrl}users/${this.deleteUser.id}`, { observe: "response" }).subscribe(res => {
+      if (!res.ok) return this._toastr.error("Error 201");
       let i = 0;
       for (const current of this.dataSource.data) {
-        current.position === user.position ? ELEMENT_DATA.splice(i, 1) : null;
+        current.id === this.deleteUser.id ? ELEMENT_DATA.splice(i, 1) : null;
         i++;
       }
       this.dataSource = new MatTableDataSource<PeriodicElement>(ELEMENT_DATA);
       this.dataSource.paginator = this.paginator;
       this.openDialog();
-    } else {
-      alert("not deleted");
-    }
+    });
   }
 
   editValue(row = null) {
@@ -158,7 +129,7 @@ export class AdminComponent implements OnInit {
       this.switchEdit = true;
       this.passwordValue = row.password;
       this.loginValue = row.email;
-      this.position = row.position;
+      this.id = row.position;
       this.row = row;
     } else {
       this.switchEdit = false;
@@ -173,41 +144,22 @@ export class AdminComponent implements OnInit {
     }
   }
   confirm(em, pass) {
-    fetch(`${environment.apiUrl}users/${this.position}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(
-        Object.assign({ email: em, password: pass }, { image: this.row.image })
-      )
-    }).then(() =>
-      this._mainService
-        .getData()
-        .then(users => (this._mainService.users = users))
-    );
-    this.editCurrentUser({
-      email: em,
-      password: pass,
-      id: this.position,
-      image: this.row.image
-    });
+    this._http
+      .put(`${environment.apiUrl}users/${this.id}`, Object.assign({ email: em, password: pass }, { image: this.row.image }), { observe: "response" })
+      .subscribe(res => {
+        if (!res.ok) return this._toastr.error("Error 201");
+        this._mainService.getData().subscribe((users: User[]) => (this._mainService.users = users));
+      });
+    this.editCurrentUser({ email: em, password: pass, id: this.id, image: this.row.image });
     this.editValue();
   }
   async openSnackBar(email: string, password: string) {
-    this._mainService.getData().then(users => {
+    this._mainService.getData().subscribe((users: User[]) => {
       const isSameUser = users.filter(item => item.email === email);
       if (isSameUser.length === 0) {
-        fetch(`${environment.apiUrl}users`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({ email: email, password: password })
-        }).then(() => {
-          this._mainService
-            .getData()
-            .then(users => (this._mainService.users = users));
+        this._http.post(`${environment.apiUrl}users`, { email: email, password: password }, { observe: "response" }).subscribe(res => {
+          if (!res.ok) return this._toastr.error("Error 201");
+          this._mainService.getData().subscribe((users: User[]) => (this._mainService.users = users));
           this.addUser({ email, password });
           this.togglePop();
         });
@@ -220,7 +172,8 @@ export class AdminComponent implements OnInit {
     private _mainService: LocalStorageService,
     private _toastr: ToastrService,
     private _bookService: BookServiceService,
-    private _router: Router
+    private _router: Router,
+    private _http: HttpClient
   ) {}
   enableContent: boolean = false;
   enableBooks() {
@@ -239,20 +192,24 @@ export class AdminComponent implements OnInit {
   }
 
   addUser(user) {
+    let k = 0;
+    for (const i of ELEMENT_DATA) {
+      if (i.id > k) {
+        k = i.id;
+      }
+    }
     ELEMENT_DATA.push({
       image: user.image,
       email: user.email,
-      // delete: "delete",
-      // edit: "edit",
       password: user.password,
-      position: ELEMENT_DATA.length + 1
+      id: k + 1
     });
     this.dataSource = new MatTableDataSource<PeriodicElement>(ELEMENT_DATA);
     this.dataSource.paginator = this.paginator;
   }
   editCurrentUser(user) {
     const oldUser = ELEMENT_DATA.filter(x => {
-      return x.position === user.id;
+      return x.id === user.id;
     })[0];
     if (oldUser) {
       oldUser.email = user.email;
@@ -264,25 +221,13 @@ export class AdminComponent implements OnInit {
 
   ngOnInit() {
     ELEMENT_DATA.length = 0;
-    fetch(`${environment.apiUrl}users`)
-      .then(prom => prom.json())
-      .then(users => {
-        users.map(item =>
-          ELEMENT_DATA.push({
-            image: item.image,
-            email: item.email,
-            password: item.password,
-            position: item.id
-          })
-        );
-      })
-      .then(
-        () =>
-          (this.dataSource = new MatTableDataSource<PeriodicElement>(
-            ELEMENT_DATA
-          ))
-      )
-      .then(() => (this.dataSource.paginator = this.paginator));
+    this._http.get(`${environment.apiUrl}users`).subscribe((users: User[]) => {
+      users.map(user => {
+        ELEMENT_DATA.push(user);
+      });
+      this.dataSource = new MatTableDataSource<PeriodicElement>(ELEMENT_DATA);
+      this.dataSource.paginator = this.paginator;
+    });
     this._bookService.sendText.subscribe(x => {
       this.dataSource = new MatTableDataSource<PeriodicElement>(
         ELEMENT_DATA.filter(item => {

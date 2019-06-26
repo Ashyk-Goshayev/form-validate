@@ -7,6 +7,8 @@ import { ToastrService } from "ngx-toastr";
 import { LocalStorageService } from "../main.service";
 import { Book } from "../interfaces";
 import { BookServiceService } from "../book-service.service";
+import { HttpErrorResponse, HttpClient } from "@angular/common/http";
+import { map } from "rxjs/operators";
 @Component({
   selector: "app-list-of-books",
   templateUrl: "./list-of-books.component.html",
@@ -24,23 +26,21 @@ export class ListOfBooksComponent implements OnInit {
   constructor(
     private _toastr: ToastrService,
     private _mainService: LocalStorageService,
-    private _bookService: BookServiceService
+    private _bookService: BookServiceService,
+    private http: HttpClient
   ) {}
   getTotalCost() {
-    return this.transactions
-      .map(t => t.price)
-      .reduce((acc, value) => acc + value, 0);
+    return this.transactions.map(t => t.price).reduce((acc, value) => acc + value, 0);
   }
   async remove(item) {
-    this._mainService
-      .remove(item)
-      .then(elem => (this.transactions = elem))
-      .then(
-        () =>
-          (this.booksDataSource = new MatTableDataSource<Transaction>(
-            this.transactions
-          ))
-      );
+    await this._mainService.remove(item).subscribe(() => {
+      let i = 0;
+      for (const book of this.transactions) {
+        book.id === item.id ? this.transactions.splice(i, 1) : null;
+        i++;
+      }
+      this.booksDataSource = new MatTableDataSource<Transaction>(this.transactions);
+    });
   }
 
   editBook(item) {
@@ -53,17 +53,10 @@ export class ListOfBooksComponent implements OnInit {
     this._mainService.isEditButton = false;
   }
   changeDataSource() {
-    return fetch(`${environment.apiUrl}books`)
-      .then(prom => prom.json())
-      .then(item => {
-        this.transactions = item;
-      })
-      .then(
-        () =>
-          (this.booksDataSource = new MatTableDataSource<Transaction>(
-            this.transactions
-          ))
-      );
+    this.http.get(`${environment.apiUrl}books`).subscribe((item: Book[]) => {
+      this.transactions = item;
+      this.booksDataSource = new MatTableDataSource<Transaction>(item);
+    });
   }
   ngOnInit() {
     this._bookService.observableEditBook.subscribe(x => {

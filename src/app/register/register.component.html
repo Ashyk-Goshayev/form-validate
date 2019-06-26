@@ -6,36 +6,21 @@
           <input type="file" (change)="getURL($event.target)" />
           <div class="log">
             <img src="{{ image }}" alt="" />
-            <i
-              [ngStyle]="{ display: uploadedImg }"
-              class="fas fa-plus-circle"
-            ></i>
+            <i [ngStyle]="{ display: uploadedImg }" class="fas fa-plus-circle"></i>
           </div>
         </div>
-        <input
-          class="form-control"
-          formControlName="email"
-          placeholder="example@mail.com"
-          required
-          minlength="3"
-        />
+        <input class="form-control" formControlName="email" placeholder="example@mail.com" required minlength="3" />
         <div class="pass">
-          <input
-            class="form-control"
-            type="{{ isVisible }}"
-            formControlName="password"
-            placeholder="Password"
-            required
-          /><i (click)="showPassword()" class="fas fa-lock"></i>
+          <input class="form-control" type="{{ isVisible }}" formControlName="password" placeholder="Password" required /><i
+            (click)="showPassword()"
+            class="fas fa-lock"
+          ></i>
         </div>
         <div class="pass">
-          <input
-            class="form-control"
-            type="{{ isVisible }}"
-            formControlName="passwordRepeat"
-            placeholder="confirm password"
-            required
-          /><i (click)="showPassword()" class="fas fa-lock"></i>
+          <input class="form-control" type="{{ isVisible }}" formControlName="passwordRepeat" placeholder="confirm password" required /><i
+            (click)="showPassword()"
+            class="fas fa-lock"
+          ></i>
         </div>
       </div>
       <button type="submit" class="reg" (click)="onsubmit()">Register</button>

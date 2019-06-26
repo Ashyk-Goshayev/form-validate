@@ -6,6 +6,7 @@ import { environment } from "../../environments/environment";
 import { Book } from "../interfaces";
 import { Subscription } from "rxjs";
 import { BookServiceService } from "../book-service.service";
+import { HttpClient } from "@angular/common/http";
 @Component({
   selector: "app-pop-for-books",
   templateUrl: "./pop-for-books.component.html",
@@ -28,7 +29,8 @@ export class PopForBooksComponent implements OnInit {
     private _formBuilder: FormBuilder,
     private _mainService: LocalStorageService,
     private _toastr: ToastrService,
-    private _bookService: BookServiceService
+    private _bookService: BookServiceService,
+    private http: HttpClient
   ) {
     this.createForm();
   }
@@ -58,29 +60,12 @@ export class PopForBooksComponent implements OnInit {
       this._toastr.error("Fill empty inputs", "WARNING");
       return;
     }
-    let response = await fetch(
-      `${environment.apiUrl}books/${JSON.parse(localStorage.book).id}`,
-      {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(
-          Object.assign(this.BooksForm.value, { image: this.image })
-        )
-      }
-    );
-    if (response.ok) {
-      fetch(`${environment.apiUrl}books`)
-        .then(item => item.json())
-        .then(x => {});
-      fetch(`${environment.apiUrl}books/${JSON.parse(localStorage.book).id}`)
-        .then(item => item.json())
-        .then(elem => this._bookService.getBookValue(elem))
-        .then(() => {
-          this._mainService.editBook();
-        });
-    }
+    this.http
+      .put(`${environment.apiUrl}books/${JSON.parse(localStorage.book).id}`, Object.assign(this.BooksForm.value, { image: this.image }))
+      .subscribe((x: Book) => {
+        this._bookService.getBookValue(x);
+        this._mainService.editBook();
+      });
   }
   createForm() {
     this.BooksForm = this._formBuilder.group({

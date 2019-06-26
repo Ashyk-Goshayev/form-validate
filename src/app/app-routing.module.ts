@@ -9,6 +9,7 @@ import { CartComponent } from "./cart/cart.component";
 import { NewBookComponent } from "./new-book/new-book.component";
 import { ProfileComponent } from "./profile/profile.component";
 import { ShopGuardsService } from "./guards/shop-guards.service";
+import { HomeComponent } from "./home/home.component";
 export const routes: Routes = [
   { path: "signIn", component: SignInComponent },
   { path: "register", component: RegisterComponent },
@@ -20,14 +21,13 @@ export const routes: Routes = [
     runGuardsAndResolvers: "always"
   },
   {
-    path: "",
-    loadChildren: () =>
-      import("./admin/admin.module").then(mod => mod.AdminModule)
+    path: "admin",
+    //   loadChildren: "./admin/admin.module#AdminModule"
+    // },
+    component: AdminComponent,
+    canActivate: [AuthGuard],
+    runGuardsAndResolvers: "always"
   },
-  //   component: AdminComponent,
-  //   canActivate: [AuthGuard],
-  //   runGuardsAndResolvers: "always"
-  // },
   {
     path: "cart",
     component: CartComponent,

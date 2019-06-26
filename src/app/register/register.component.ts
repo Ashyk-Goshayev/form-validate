@@ -2,7 +2,8 @@ import { Component, OnInit } from "@angular/core";
 import { FormGroup, FormBuilder, Validators } from "@angular/forms";
 import { LocalStorageService } from "../main.service";
 import { Router } from "@angular/router";
-
+import { User } from "../interfaces";
+import { ToastrService } from "ngx-toastr";
 @Component({
   selector: "app-register",
   templateUrl: "./register.component.html",
@@ -18,11 +19,7 @@ export class RegisterComponent {
   isSwitched: boolean = true;
   file: File = null;
   image: any;
-  constructor(
-    private formBuilder: FormBuilder,
-    private _mainService: LocalStorageService,
-    private router: Router
-  ) {
+  constructor(private formBuilder: FormBuilder, private _mainService: LocalStorageService, private router: Router, private _toastr: ToastrService) {
     this.createForm();
     this.user = [];
   }
@@ -39,7 +36,11 @@ export class RegisterComponent {
     };
   }
   onsubmit() {
-    this._mainService.onsubmitReg(this.exampleForm.value, this.image);
+    this._mainService.onsubmitReg(this.exampleForm.value, this.image).then(() =>
+      this._mainService.getData().subscribe((users: User[]) => {
+        this._mainService.users = users;
+      })
+    );
     if (this._mainService.isSuccess) {
       return this.router.navigate(["signIn"]);
     }

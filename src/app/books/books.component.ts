@@ -27,23 +27,15 @@ export class BooksComponent implements OnInit {
   showContent: Observable<Tile>;
   myCart: Book[] = [];
   books: Book[];
-  constructor(
-    private localStore: LocalStorageService,
-    private router: Router,
-    private service: BookServiceService,
-    private _http: HttpClient
-  ) {
+  constructor(private localStore: LocalStorageService, private router: Router, private service: BookServiceService, private _http: HttpClient) {
     this.bookInfo();
     this.tiles = this.allTiles;
   }
 
   bookInfo() {
-    let response = fetch(`${environment.apiUrl}books`)
-      .then(prom => prom.json())
-      .then(users => {
-        // users.map(item=> item.price = item.price + '$')
-        users.map(item => this.allTiles.push(item));
-      });
+    this._http.get(`${environment.apiUrl}books`).subscribe((books: Book[]) => {
+      books.map(item => this.allTiles.push(item));
+    });
   }
 
   addToCart(cart) {
@@ -66,16 +58,11 @@ export class BooksComponent implements OnInit {
   }
   ngOnInit() {
     this.service.sendText.subscribe(x => {
-      fetch(`${environment.apiUrl}books`)
-        .then(item => item.json())
-        .then(
-          element =>
-            (this.tiles = element.filter(item => {
-              return (
-                item.name.toLowerCase().indexOf(x) > -1 || item.price == +x
-              );
-            }))
-        );
+      this._http.get(`${environment.apiUrl}books`).subscribe((element: Book[]) => {
+        this.tiles = element.filter(item => {
+          return item.name.toLowerCase().indexOf(x) > -1 || item.price == +x;
+        });
+      });
     });
   }
 

@@ -20,12 +20,7 @@ export class CartComponent implements OnInit {
   index: number;
   bookPrice: Transaction;
   showDeleteActions: boolean = false;
-  constructor(
-    private service: LocalStorageService,
-    private router: Router,
-    private bookService: BookServiceService,
-    private _location: Location
-  ) {
+  constructor(private service: LocalStorageService, private router: Router, private bookService: BookServiceService, private _location: Location) {
     if (localStorage.cart !== undefined) {
       this.datasource = JSON.parse(localStorage.cart);
       this.transactions = JSON.parse(localStorage.cart);
@@ -42,9 +37,7 @@ export class CartComponent implements OnInit {
     });
   }
   getTotalCost() {
-    return this.transactions
-      .map(t => t.price)
-      .reduce((acc, value) => acc + value, 0);
+    return this.transactions.map(t => t.price).reduce((acc, value) => acc + value, 0);
   }
   showPop(element = null, path = null) {
     this.index = path;

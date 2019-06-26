@@ -10,9 +10,7 @@
         <i>author</i>
       </div>
       <span>{{ (book.about | slice: 0:600) + "......" }}</span>
-      <button (click)="buy(book.price, book)">
-        buy {{ book.price | currency: "USD" }}
-      </button>
+      <button (click)="buy(book.price, book)">buy {{ book.price | currency: "USD" }}</button>
     </div>
   </div>
 </div>

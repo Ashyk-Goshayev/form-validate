@@ -1,15 +1,9 @@
 import { NgModule } from "@angular/core";
-import {
-  MatButtonModule,
-  MatMenuModule,
-  MatToolbarModule,
-  MatIconModule,
-  MatCardModule
-} from "@angular/material";
-import { BrowserModule } from "@angular/platform-browser";
+import { MatButtonModule, MatMenuModule, MatToolbarModule, MatIconModule, MatCardModule } from "@angular/material";
+// import { BrowserModule } from "@angular/platform-browser";
 import { HttpClientModule } from "@angular/common/http";
 import { ReactiveFormsModule } from "@angular/forms";
-import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+// import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { MatCheckboxModule } from "@angular/material";
 import { MatInputModule } from "@angular/material/input";
 import { MatAutocompleteModule } from "@angular/material/autocomplete";
@@ -35,11 +29,10 @@ import { MatSnackBarModule } from "@angular/material/snack-bar";
 import { MatTableModule } from "@angular/material/table";
 import { MatSortModule } from "@angular/material/sort";
 import { MatPaginatorModule } from "@angular/material/paginator";
-import {
-  MatBadgeModule,
-  MatBottomSheetModule,
-  MatTreeModule
-} from "@angular/material";
+import { MatBadgeModule, MatBottomSheetModule, MatTreeModule } from "@angular/material";
+import { UserComponent } from "./user/user.component";
+import { SearchComponent } from "./search/search.component";
+import { CartIconComponent } from "./cart-icon/cart-icon.component";
 
 @NgModule({
   imports: [
@@ -48,8 +41,8 @@ import {
     MatToolbarModule,
     MatIconModule,
     MatCardModule,
-    BrowserModule,
-    BrowserAnimationsModule,
+    // BrowserModule,
+    // BrowserAnimationsModule,
     MatCheckboxModule,
     MatCheckboxModule,
     MatButtonModule,
@@ -115,8 +108,8 @@ import {
     HttpClientModule,
     ReactiveFormsModule,
     MatGridListModule,
-    BrowserModule,
-    BrowserAnimationsModule,
+    // BrowserModule,
+    // BrowserAnimationsModule,
     HttpClientModule,
     MatInputModule,
     MatTableModule,
@@ -137,8 +130,8 @@ import {
     MatToolbarModule,
     MatIconModule,
     MatCardModule,
-    BrowserModule,
-    BrowserAnimationsModule,
+    // BrowserModule,
+    // BrowserAnimationsModule,
     MatCheckboxModule,
     MatCheckboxModule,
     MatButtonModule,
@@ -204,8 +197,8 @@ import {
     HttpClientModule,
     ReactiveFormsModule,
     MatGridListModule,
-    BrowserModule,
-    BrowserAnimationsModule,
+    // BrowserModule,
+    // BrowserAnimationsModule,
     HttpClientModule,
     MatInputModule,
     MatTableModule,

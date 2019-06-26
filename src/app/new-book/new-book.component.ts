@@ -5,6 +5,7 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { environment } from "../../environments/environment";
 import { Location } from "@angular/common";
 import { Book } from "../interfaces";
+import { HttpClient } from "@angular/common/http";
 @Component({
   selector: "app-new-book",
   templateUrl: "./new-book.component.html",
@@ -18,15 +19,16 @@ export class NewBookComponent implements OnInit {
     private service: BookServiceService,
     private activroute: ActivatedRoute,
     private router: Router,
-    private _location: Location
+    private _location: Location,
+    private http: HttpClient
   ) {}
 
   ngOnInit() {
     this.subsc = this.activroute.params.subscribe(params => {
       this.id = params["id"];
-      fetch(`${environment.apiUrl}books/${this.id}`)
-        .then(item => item.json())
-        .then(item => (this.book = item));
+      this.http.get(`${environment.apiUrl}books/${this.id}`).subscribe((item: Book) => {
+        return (this.book = item);
+      });
     });
   }
   buy(item, obj) {

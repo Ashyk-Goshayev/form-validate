@@ -12,7 +12,7 @@ export interface Price {
 }
 export interface PeriodicElement {
   email: string;
-  position: number;
+  id: number;
   password: string;
   image: string;
 }

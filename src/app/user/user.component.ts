@@ -13,11 +13,7 @@ export class UserComponent implements OnInit {
   img: string;
   hasImage: string;
   show: string = "none";
-  constructor(
-    private localStore: LocalStorageService,
-    private route: Router,
-    private BookService: BookServiceService
-  ) {
+  constructor(private localStore: LocalStorageService, private route: Router, private BookService: BookServiceService) {
     this.user = JSON.parse(localStorage.currentUser)[0].email.split(/@/g)[0];
     if (JSON.parse(localStorage.currentUser)[0].image) {
       this.hasImage = "none";

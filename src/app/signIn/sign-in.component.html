@@ -2,15 +2,18 @@
   <div class="container">
     <form [formGroup]="exampleForm">
       <div class="form-group">
-          <div class="logo">
-              <i class="far fa-user"></i>
-          </div>
-          <input class="form-control1" type="text" formControlName="email" placeholder="User name" required minlength="3">
-         <div class="pass" > 
-            <input class="form-control" type="{{ isVisible }}" ngModel="myInput" formControlName="password" placeholder="Password" required><i (click)='showPassword()' class="fas fa-lock"></i>
-         </div>
+        <div class="logo">
+          <i class="far fa-user"></i>
+        </div>
+        <input class="form-control1" type="text" formControlName="email" placeholder="User name" required minlength="3" />
+        <div class="pass">
+          <input class="form-control" type="{{ isVisible }}" ngModel="myInput" formControlName="password" placeholder="Password" required /><i
+            (click)="showPassword()"
+            class="fas fa-lock"
+          ></i>
+        </div>
       </div>
-      <button type="submit" (click)="onsubmit()" routerLink="{{isClient}}">Sign in</button>
+      <button type="submit" (click)="onsubmit()" routerLink="{{ isClient }}">Sign in</button>
     </form>
   </div>
 </ng-container>

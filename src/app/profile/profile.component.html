@@ -10,27 +10,16 @@
       </ng-template>
     </div>
 
-    <input
-      matInput
-      value="{{ email }}"
-      formControlName="email"
-      type="text"
-      placeholder="email"
-    />
+    <input matInput value="{{ email }}" formControlName="email" type="text" placeholder="email" />
 
-    <input
-      value="{{ password }}"
-      formControlName="password"
-      type="text"
-      placeholder="password"
-    />
+    <input value="{{ password }}" formControlName="password" type="text" placeholder="password" />
     <div class="buttons">
       <button mat-flat-button (click)="editPopUp()">Cancel</button>
       <button mat-flat-button (click)="confirm()" type="submit">Confirm</button>
     </div>
   </form>
 </div>
-<div class="layer" [ngStyle]="{ display: showEdit }"></div>
+<div class="layer" *ngIf="switch"></div>
 
 <div class="profile-card">
   <i (click)="goBack()" class="fas fa-long-arrow-alt-left"></i>

@@ -1,19 +1,19 @@
-a{
-    display: flex;
-    background: rgba(0, 0, 0, 0.404);
-    border-radius: 10px;
-    justify-content: space-around;
-    color: white;
-    font-size: 25px;
+a {
+  display: flex;
+  background: rgba(0, 0, 0, 0.404);
+  border-radius: 10px;
+  justify-content: space-around;
+  color: white;
+  font-size: 25px;
+  line-height: 40px;
+  cursor: pointer;
+  i {
     line-height: 40px;
+    font-size: 30px;
     cursor: pointer;
-    i{
-        line-height: 40px;
-        font-size: 30px;
-        cursor: pointer;
-    }
-    width: 170px;
-    height: 40px;
-    position: absolute;
-    right: 50%;
+  }
+  width: 170px;
+  height: 40px;
+  position: absolute;
+  right: 50%;
 }
