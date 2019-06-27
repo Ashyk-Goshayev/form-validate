@@ -59,6 +59,13 @@ export class ListOfBooksComponent implements OnInit {
     });
   }
   ngOnInit() {
+    this._bookService.sendText.subscribe(x => {
+      this.booksDataSource = new MatTableDataSource<Transaction>(
+        this.transactions.filter(item => {
+          return item.name.toLowerCase().indexOf(x) > -1 || item.price === +x;
+        })
+      );
+    });
     this._bookService.observableEditBook.subscribe(x => {
       return this.changeDataSource();
     });

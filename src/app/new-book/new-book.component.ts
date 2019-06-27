@@ -6,6 +6,7 @@ import { environment } from "../../environments/environment";
 import { Location } from "@angular/common";
 import { Book } from "../interfaces";
 import { HttpClient } from "@angular/common/http";
+import { isArray } from "util";
 @Component({
   selector: "app-new-book",
   templateUrl: "./new-book.component.html",
@@ -32,10 +33,21 @@ export class NewBookComponent implements OnInit {
     });
   }
   buy(item, obj) {
-    let cart = JSON.parse(localStorage.cart);
-    cart.push(obj);
-    localStorage.cart = JSON.stringify(cart);
-    this.service.sendBookPrice(item);
+    if (localStorage.cart !== undefined) {
+      if (!isArray(JSON.parse(localStorage.cart))) {
+        let cart = [];
+        cart.push(JSON.parse(localStorage.cart));
+        cart.push(obj);
+        localStorage.cart = JSON.stringify(cart);
+      }
+      let cart = JSON.parse(localStorage.cart);
+      cart.push(obj);
+      localStorage.cart = JSON.stringify(cart);
+      return this.service.sendBookPrice(item);
+    } else {
+      localStorage.cart = JSON.stringify(obj);
+      return this.service.sendBookPrice(item);
+    }
   }
   goBack() {
     return this._location.back();

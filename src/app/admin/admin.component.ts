@@ -71,8 +71,7 @@ export class AdminComponent implements OnInit {
 
   async deleteAllSelected() {
     for (const user of this.selection.selected) {
-      this._http.delete(`${environment.apiUrl}users/${user.id}`, { observe: "response" }).subscribe(res => {
-        if (!res.ok) return this._toastr.error("Error 201");
+      this._http.delete(`${environment.apiUrl}users/${user.id}`).subscribe(() => {
         ELEMENT_DATA.splice(ELEMENT_DATA.indexOf(ELEMENT_DATA.filter(x => x.id === user.id)[0]), 1);
         this.dataSource = new MatTableDataSource<PeriodicElement>(ELEMENT_DATA);
         this.dataSource.paginator = this.paginator;
@@ -111,8 +110,7 @@ export class AdminComponent implements OnInit {
     }
   }
   async deleteRow() {
-    this._http.delete(`${environment.apiUrl}users/${this.deleteUser.id}`, { observe: "response" }).subscribe(res => {
-      if (!res.ok) return this._toastr.error("Error 201");
+    this._http.delete(`${environment.apiUrl}users/${this.deleteUser.id}`).subscribe(() => {
       let i = 0;
       for (const current of this.dataSource.data) {
         current.id === this.deleteUser.id ? ELEMENT_DATA.splice(i, 1) : null;
@@ -129,7 +127,7 @@ export class AdminComponent implements OnInit {
       this.switchEdit = true;
       this.passwordValue = row.password;
       this.loginValue = row.email;
-      this.id = row.position;
+      this.id = row.id;
       this.row = row;
     } else {
       this.switchEdit = false;
@@ -144,12 +142,11 @@ export class AdminComponent implements OnInit {
     }
   }
   confirm(em, pass) {
-    this._http
-      .put(`${environment.apiUrl}users/${this.id}`, Object.assign({ email: em, password: pass }, { image: this.row.image }), { observe: "response" })
-      .subscribe(res => {
-        if (!res.ok) return this._toastr.error("Error 201");
-        this._mainService.getData().subscribe((users: User[]) => (this._mainService.users = users));
-      });
+    console.log(this.id);
+
+    this._http.put(`${environment.apiUrl}users/${this.id}`, Object.assign({ email: em, password: pass }, { image: this.row.image })).subscribe(() => {
+      this._mainService.getData().subscribe((users: User[]) => (this._mainService.users = users));
+    });
     this.editCurrentUser({ email: em, password: pass, id: this.id, image: this.row.image });
     this.editValue();
   }
@@ -157,8 +154,7 @@ export class AdminComponent implements OnInit {
     this._mainService.getData().subscribe((users: User[]) => {
       const isSameUser = users.filter(item => item.email === email);
       if (isSameUser.length === 0) {
-        this._http.post(`${environment.apiUrl}users`, { email: email, password: password }, { observe: "response" }).subscribe(res => {
-          if (!res.ok) return this._toastr.error("Error 201");
+        this._http.post(`${environment.apiUrl}users`, { email: email, password: password }).subscribe(() => {
           this._mainService.getData().subscribe((users: User[]) => (this._mainService.users = users));
           this.addUser({ email, password });
           this.togglePop();

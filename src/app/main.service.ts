@@ -86,13 +86,10 @@ export class LocalStorageService {
       if (formInput.password === formInput.passwordRepeat) {
         this.isSuccess = true;
         this.hideCart = true;
-        this.http
-          .post<User>(`${environment.apiUrl}users`, { email: formInput.email, password: formInput.password }, { observe: "response" })
-          .subscribe(response => {
-            if (!response) return this._toastr.error("Error 201");
-            this.getData().subscribe((users: User[]) => (this.users = users));
-            this._toastr.success("Registration passed", "SUCCESS");
-          });
+        this.http.post<User>(`${environment.apiUrl}users`, { email: formInput.email, password: formInput.password }).subscribe(() => {
+          this.getData().subscribe((users: User[]) => (this.users = users));
+          this._toastr.success("Registration passed", "SUCCESS");
+        });
       } else {
         this._toastr.error("Passwords do not match", "WARNING!");
       }
@@ -101,7 +98,7 @@ export class LocalStorageService {
     }
   }
   getToken() {
-    return JSON.parse(localStorage.getItem("book")).name;
+    return localStorage.getItem("user");
   }
   onsubmitSign(inputForm: { email: string; password: string }) {
     if (this.users != null || this.admin != null) {
@@ -120,6 +117,7 @@ export class LocalStorageService {
           this._toastr.error("email or password is wrong", "WARNING!");
         }
       } else if (this.admin.email === inputForm.email && this.admin.password === inputForm.password) {
+        localStorage.user = this.admin.email;
         localStorage.currentUser = JSON.stringify([{ email: this.admin.email }]);
         this.hideCart = false;
         this.hide = false;

@@ -64,8 +64,7 @@ export class ProfileComponent implements OnInit {
   editUser() {
     return this._http.put(
       `${environment.apiUrl}users/${JSON.parse(localStorage.currentUser)[0].id}`,
-      Object.assign(this.editForm.value, { image: this.img }),
-      { observe: "response" }
+      Object.assign(this.editForm.value, { image: this.img })
     );
   }
   changeValues() {
@@ -104,8 +103,7 @@ export class ProfileComponent implements OnInit {
       this.editForm.value.email !== ""
     ) {
       if (JSON.parse(localStorage.currentUser).email === this.editForm.value.email || sameUser === 0) {
-        this.editUser().subscribe(res => {
-          if (!res.ok) return this.toastr.warning("error 201");
+        this.editUser().subscribe(() => {
           this.changeValues();
           this.editPopUp();
         });
