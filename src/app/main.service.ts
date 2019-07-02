@@ -101,9 +101,7 @@ export class LocalStorageService {
   }
   user: User[];
   token: string;
-  refreshToken() {
-    this.http.post(`${environment.apiUrl}authenticate`);
-  }
+
   onsubmitSign(inputForm: { email: string; password: string }) {
     if (this.users != null || this.admin != null) {
       if ((this.users != null && this.admin.email !== inputForm.email) || this.admin.password !== inputForm.password) {
@@ -113,6 +111,7 @@ export class LocalStorageService {
         this.http.post(`${environment.apiUrl}authenticate`, { email: inputForm.email, password: inputForm.password }).subscribe(
           (x: any) => {
             localStorage.token = x.data;
+            localStorage.refreshToken = x.refreshToken;
             this.isLogin = true;
           },
           err => {

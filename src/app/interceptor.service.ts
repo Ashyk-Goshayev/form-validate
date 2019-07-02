@@ -26,10 +26,7 @@ export class InterceptorService implements HttpInterceptor {
         let errorMessage = "";
         if (error.status === 401) {
           if (error.error.message == "Token is exp") {
-            let params = {
-              token: token,
-              refreshToken: "localStorange(refreshToken);"
-            };
+            token = localStorage.refreshToken;
           } else {
           }
         }
