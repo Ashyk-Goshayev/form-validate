@@ -40,10 +40,10 @@ export class UserComponent implements OnInit {
   }
   ngOnInit() {
     this.BookService.observableUser.subscribe(x => {
-      this.user = x[0].email.split(/@/g)[0];
-      if (x[0].image) {
+      this.user = x.email.split(/@/g)[0];
+      if (x.image) {
         this.hasImage = "none";
-        this.img = x[0].image;
+        this.img = x.image;
       } else {
         this.img = "";
         this.hasImage = "";

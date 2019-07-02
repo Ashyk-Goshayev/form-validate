@@ -30,7 +30,7 @@ export class LocalStorageService {
   isEditButton: boolean = true;
   switchBooksPop: boolean = false;
   switchEditPop: boolean = false;
-
+  isLogin: Boolean = false;
   constructor(private _toastr: ToastrService, private router: Router, private http: HttpClient) {
     this.arrayOfUsers = [];
     this.getData().subscribe((users: User[]) => (this.users = users));
@@ -54,7 +54,7 @@ export class LocalStorageService {
       return this._toastr.error("Fill empty inputs", "WARNING");
     }
     return this.http
-      .post(`${environment.apiUrl}books`, Object.assign(BooksForm, { image: img }))
+      .put(`${environment.apiUrl}books`, Object.assign(BooksForm, { image: img }))
       .subscribe(() => this._toastr.success("new book added", "Success"));
   }
   editBook() {
@@ -86,10 +86,12 @@ export class LocalStorageService {
       if (formInput.password === formInput.passwordRepeat) {
         this.isSuccess = true;
         this.hideCart = true;
-        this.http.post<User>(`${environment.apiUrl}users`, { email: formInput.email, password: formInput.password }).subscribe(() => {
-          this.getData().subscribe((users: User[]) => (this.users = users));
-          this._toastr.success("Registration passed", "SUCCESS");
-        });
+        this.http
+          .post<User>(`${environment.apiUrl}register`, { email: formInput.email, password: formInput.password, image: img || "" })
+          .subscribe(() => {
+            this.getData().subscribe((users: User[]) => (this.users = users));
+            this._toastr.success("Registration passed", "SUCCESS");
+          });
       } else {
         this._toastr.error("Passwords do not match", "WARNING!");
       }
@@ -97,18 +99,28 @@ export class LocalStorageService {
       this._toastr.error("email should be like example@gmail.com", "WARNING!");
     }
   }
-  getToken() {
-    return localStorage.getItem("user");
+  user: User[];
+  token: string;
+  refreshToken() {
+    this.http.post(`${environment.apiUrl}authenticate`);
   }
   onsubmitSign(inputForm: { email: string; password: string }) {
     if (this.users != null || this.admin != null) {
       if ((this.users != null && this.admin.email !== inputForm.email) || this.admin.password !== inputForm.password) {
-        let user;
-        user = this.users.filter(elem => {
-          return elem.email == inputForm.email ? elem.password == inputForm.password : null;
+        this.user = this.users.filter(elem => {
+          return elem.email == inputForm.email;
         });
-        if (user.length >= 1) {
-          localStorage.currentUser = JSON.stringify(user);
+        this.http.post(`${environment.apiUrl}authenticate`, { email: inputForm.email, password: inputForm.password }).subscribe(
+          (x: any) => {
+            localStorage.token = x.data;
+            this.isLogin = true;
+          },
+          err => {
+            this.isLogin = false;
+          }
+        );
+        if (this.isLogin) {
+          localStorage.currentUser = JSON.stringify(this.user);
           this.hideCart = true;
           this.isCorrectSign = true;
           this.hide = false;

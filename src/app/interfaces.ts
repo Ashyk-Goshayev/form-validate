@@ -30,7 +30,7 @@ export interface User {
   id: number;
   email: string;
   password: string;
-  image: any;
+  image: string;
 }
 export interface List {
   position: number;

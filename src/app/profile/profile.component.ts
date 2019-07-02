@@ -125,7 +125,6 @@ export class ProfileComponent implements OnInit {
   ngOnInit() {
     this._http.get(`${environment.apiUrl}users/${JSON.parse(localStorage.currentUser)[0].id}`).subscribe((user: User) => {
       this.email = user.email;
-      this.password = user.password;
       this.name = user.email.split(/@/g)[0];
       if (user.image !== undefined) {
         this.showImg = false;

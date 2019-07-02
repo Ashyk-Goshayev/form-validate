@@ -59,6 +59,7 @@ export class ListOfBooksComponent implements OnInit {
     });
   }
   ngOnInit() {
+    this.changeDataSource();
     this._bookService.sendText.subscribe(x => {
       this.booksDataSource = new MatTableDataSource<Transaction>(
         this.transactions.filter(item => {
@@ -69,7 +70,5 @@ export class ListOfBooksComponent implements OnInit {
     this._bookService.observableEditBook.subscribe(x => {
       return this.changeDataSource();
     });
-
-    this.changeDataSource();
   }
 }

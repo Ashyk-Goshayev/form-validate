@@ -154,7 +154,7 @@ export class AdminComponent implements OnInit {
     this._mainService.getData().subscribe((users: User[]) => {
       const isSameUser = users.filter(item => item.email === email);
       if (isSameUser.length === 0) {
-        this._http.post(`${environment.apiUrl}users`, { email: email, password: password }).subscribe(() => {
+        this._http.post(`${environment.apiUrl}register`, { email: email, password: password, image: "" }).subscribe(() => {
           this._mainService.getData().subscribe((users: User[]) => (this._mainService.users = users));
           this.addUser({ email, password });
           this.togglePop();

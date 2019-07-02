@@ -9,7 +9,7 @@
         <h2>{{ book.name }}</h2>
         <i>author</i>
       </div>
-      <span>{{ (book.about | slice: 0:600) + "......" }}</span>
+      <span>{{ str.about.length > 600 ? (str | slice: 0:600) + ".." : str }}</span>
       <button (click)="buy(book.price, book)">buy {{ book.price | currency: "USD" }}</button>
     </div>
   </div>
