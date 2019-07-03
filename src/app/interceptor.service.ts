@@ -6,13 +6,13 @@ import { ToastrService } from "ngx-toastr";
 import { Router } from "@angular/router";
 import { LocalStorageService } from "./main.service";
 import { error } from "@angular/compiler/src/util";
+import { TokenService } from "./token.service";
 @Injectable()
 export class InterceptorService implements HttpInterceptor {
-  constructor(private _toastr: ToastrService, private _injector: Injector, private auth: LocalStorageService) {}
+  constructor(private _toastr: ToastrService, private _injector: Injector) {}
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    let token = localStorage.token;
-
+    let token = this.authService.getToken();
     if (token) {
       req = req.clone({
         setHeaders: {
@@ -20,16 +20,15 @@ export class InterceptorService implements HttpInterceptor {
         }
       });
     }
-
     return next.handle(req).pipe(
       catchError((error: HttpErrorResponse) => {
         let errorMessage = "";
-        if (error.status === 401) {
-          if (error.error.message == "Token is exp") {
-            token = localStorage.refreshToken;
-          } else {
-          }
-        }
+        // if (error.status === 401) {
+        //   if () {
+        //     console.log("token expired");
+        //   } else {
+        //   }
+        // }
         if (error.error instanceof ErrorEvent) {
           errorMessage = `Error: ${error.error.message}`;
         } else {
@@ -39,5 +38,8 @@ export class InterceptorService implements HttpInterceptor {
         return throwError(errorMessage);
       })
     );
+  }
+  protected get authService() {
+    return this._injector.get(TokenService);
   }
 }

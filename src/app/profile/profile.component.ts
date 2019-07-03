@@ -80,7 +80,7 @@ export class ProfileComponent implements OnInit {
       this.showImg = true;
     }
     this.toastr.success("Your data edited");
-    this.bookService.sendCurrentUser(JSON.parse(localStorage.currentUser));
+    this.bookService.sendCurrentUser(JSON.parse(localStorage.currentUser)[0]);
   }
   async confirm() {
     let testEmail = /^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
@@ -126,7 +126,7 @@ export class ProfileComponent implements OnInit {
     this._http.get(`${environment.apiUrl}users/${JSON.parse(localStorage.currentUser)[0].id}`).subscribe((user: User) => {
       this.email = user.email;
       this.name = user.email.split(/@/g)[0];
-      if (user.image !== undefined) {
+      if (user.image) {
         this.showImg = false;
         this.image = user.image;
       } else {

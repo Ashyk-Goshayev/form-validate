@@ -31,6 +31,7 @@ export class LocalStorageService {
   switchBooksPop: boolean = false;
   switchEditPop: boolean = false;
   isLogin: Boolean = false;
+  user: User[];
   constructor(private _toastr: ToastrService, private router: Router, private http: HttpClient) {
     this.arrayOfUsers = [];
     this.getData().subscribe((users: User[]) => (this.users = users));
@@ -87,7 +88,7 @@ export class LocalStorageService {
         this.isSuccess = true;
         this.hideCart = true;
         this.http
-          .post<User>(`${environment.apiUrl}register`, { email: formInput.email, password: formInput.password, image: img || "" })
+          .post<User>(`${environment.apiUrl}register`, { email: formInput.email, password: formInput.password, image: img || "null" })
           .subscribe(() => {
             this.getData().subscribe((users: User[]) => (this.users = users));
             this._toastr.success("Registration passed", "SUCCESS");
@@ -99,8 +100,6 @@ export class LocalStorageService {
       this._toastr.error("email should be like example@gmail.com", "WARNING!");
     }
   }
-  user: User[];
-  token: string;
 
   onsubmitSign(inputForm: { email: string; password: string }) {
     if (this.users != null || this.admin != null) {
@@ -110,6 +109,7 @@ export class LocalStorageService {
         });
         this.http.post(`${environment.apiUrl}authenticate`, { email: inputForm.email, password: inputForm.password }).subscribe(
           (x: any) => {
+            localStorage.expiresIn = x.expiresIn;
             localStorage.token = x.data;
             localStorage.refreshToken = x.refreshToken;
             this.isLogin = true;

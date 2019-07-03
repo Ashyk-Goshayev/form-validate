@@ -9,7 +9,13 @@
         <h2>{{ book.name }}</h2>
         <i>author</i>
       </div>
-      <span>{{ str.about.length > 600 ? (str | slice: 0:600) + ".." : str }}</span>
+      <ng-container *ngIf="book.about.length > 5; else elseTemplate">
+        <span>{{ (book.about | slice: 0:3) + "..." }}</span>
+      </ng-container>
+      <ng-template #elseTemplate>
+        {{ book.about }}
+      </ng-template>
+
       <button (click)="buy(book.price, book)">buy {{ book.price | currency: "USD" }}</button>
     </div>
   </div>
