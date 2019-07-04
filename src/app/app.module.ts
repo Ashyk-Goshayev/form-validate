@@ -29,10 +29,11 @@ import { ListOfBooksComponent } from "./list-of-books/list-of-books.component";
 import { PopForBooksComponent } from "./pop-for-books/pop-for-books.component";
 // import { AdminRoutingModule } from "./admin/admin-routing.module";
 import { AdminComponent } from "./admin/admin.component";
-import { AdminModule } from "./admin/admin.module";
+// import { AdminModule } from "./admin/admin.module";
 import { MaterialModule } from "./materials";
 import { HTTP_INTERCEPTORS } from "@angular/common/http";
 import { InterceptorService } from "./interceptor.service";
+import { NgxImageCompressService } from "ngx-image-compress";
 @NgModule({
   declarations: [
     AppComponent,
@@ -73,6 +74,8 @@ import { InterceptorService } from "./interceptor.service";
     AuthGuard,
     BookServiceService,
     ShopGuardsService,
+    NgxImageCompressService,
+
     {
       provide: HTTP_INTERCEPTORS,
       useClass: InterceptorService,

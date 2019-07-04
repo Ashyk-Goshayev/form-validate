@@ -71,8 +71,10 @@ export class ProfileComponent implements OnInit {
     localStorage.currentUser = JSON.stringify([
       Object.assign({ id: JSON.parse(localStorage.currentUser)[0].id }, this.editForm.value, { image: this.img })
     ]);
+
     this.email = this.editForm.value.email;
     this.name = this.editForm.value.email.split(/@/g)[0];
+
     if (this.img !== undefined) {
       this.showImg = false;
       this.image = this.img;
@@ -124,11 +126,11 @@ export class ProfileComponent implements OnInit {
 
   ngOnInit() {
     this._http.get(`${environment.apiUrl}users/${JSON.parse(localStorage.currentUser)[0].id}`).subscribe((user: User) => {
-      this.email = user.email;
-      this.name = user.email.split(/@/g)[0];
-      if (user.image) {
+      this.email = user[0].email;
+      this.name = user[0].email.split(/@/g)[0];
+      if (user[0].image) {
         this.showImg = false;
-        this.image = user.image;
+        this.image = user[0].image;
       } else {
         this.showImg = true;
       }

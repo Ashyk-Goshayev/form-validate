@@ -7,6 +7,7 @@ import { Book } from "../interfaces";
 import { Subscription } from "rxjs";
 import { BookServiceService } from "../book-service.service";
 import { HttpClient } from "@angular/common/http";
+import { NgxImageCompressService } from "ngx-image-compress";
 @Component({
   selector: "app-pop-for-books",
   templateUrl: "./pop-for-books.component.html",
@@ -30,10 +31,38 @@ export class PopForBooksComponent implements OnInit {
     private _mainService: LocalStorageService,
     private _toastr: ToastrService,
     private _bookService: BookServiceService,
-    private http: HttpClient
+    private http: HttpClient,
+    private imageCompress: NgxImageCompressService
   ) {
     this.createForm();
   }
+  compressFile() {
+    this.imageCompress.uploadFile().then(({ image, orientation }) => {
+      // this.imgResultBeforeCompress = image;
+      console.warn("Size in bytes was:", this.imageCompress.byteCount(image));
+      this.imageCompress.compressFile(image, orientation, 50, 50).then(result => {
+        // this.imgResultAfterCompress = result;
+
+        if (this.imageCompress.byteCount(result) < 25000) {
+          this.imageCompress.compressFile(image, orientation, 50, 100).then(res => {
+            console.warn("Size in bytes is now:", this.imageCompress.byteCount(res));
+            this.image = res;
+          });
+        } else {
+          this.image = result;
+          console.warn("Size in bytes is now:", this.imageCompress.byteCount(result));
+        }
+      });
+    });
+  }
+  // uploadFile() {
+  //   this.imageCompress.uploadFile().then(({ image, orientation }) => {
+  //     // this.imgResultUpload = image;
+
+  //     console.warn(image);
+  //     console.warn(orientation);
+  //   });
+  // }
   addBook() {
     this._mainService.addBook(this.BooksForm.value, this.image);
     this.showImage = false;
@@ -41,6 +70,9 @@ export class PopForBooksComponent implements OnInit {
     this.openBook();
   }
   book: Book;
+  formData = new FormData();
+  selectedFile: File;
+
   getURL(img) {
     const reader = new FileReader();
     this.file = img.files[0] as File;
@@ -49,6 +81,7 @@ export class PopForBooksComponent implements OnInit {
     }
     reader.onload = () => {
       this.image = <string>reader.result;
+      console.log(<string>reader.result);
       this.showImage = true;
       this.hideLogo = false;
       this.photoOfBook = <string>reader.result;

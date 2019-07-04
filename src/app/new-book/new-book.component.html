@@ -9,8 +9,8 @@
         <h2>{{ book.name }}</h2>
         <i>author</i>
       </div>
-      <ng-container *ngIf="book.about.length > 5; else elseTemplate">
-        <span>{{ (book.about | slice: 0:3) + "..." }}</span>
+      <ng-container *ngIf="book.about.length > 600; else elseTemplate">
+        <span>{{ (book.about | slice: 0:600) + "..." }}</span>
       </ng-container>
       <ng-template #elseTemplate>
         {{ book.about }}

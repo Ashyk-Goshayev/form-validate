@@ -25,10 +25,9 @@ export class NewBookComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.subsc = this.activroute.params.subscribe(params => {
-      this.id = params["id"];
-      this.http.get(`${environment.apiUrl}books/${this.id}`).subscribe((item: Book) => {
-        return (this.book = item);
+    this.activroute.params.subscribe(params => {
+      this.http.get(`${environment.apiUrl}books/${params.id}`).subscribe((item: Book[]) => {
+        return (this.book = item[0]);
       });
     });
   }

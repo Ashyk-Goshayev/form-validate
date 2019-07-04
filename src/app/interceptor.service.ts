@@ -23,12 +23,6 @@ export class InterceptorService implements HttpInterceptor {
     return next.handle(req).pipe(
       catchError((error: HttpErrorResponse) => {
         let errorMessage = "";
-        // if (error.status === 401) {
-        //   if () {
-        //     console.log("token expired");
-        //   } else {
-        //   }
-        // }
         if (error.error instanceof ErrorEvent) {
           errorMessage = `Error: ${error.error.message}`;
         } else {

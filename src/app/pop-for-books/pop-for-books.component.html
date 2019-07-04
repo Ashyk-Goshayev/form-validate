@@ -19,11 +19,14 @@
         <div>
           <img src="{{ photoOfBook }}" *ngIf="showImage" />
           <label for="file" class="upload" *ngIf="hideLogo"><i class="fas fa-cloud-upload-alt"></i><strong>Choose an image</strong></label>
-          <input type="file" name="file" (change)="getURL($event.target)" class="inputfile" />
+          <!-- <input type="file" name="file" (change)="getURL($event.target)" class="inputfile" /> -->
+          <button (click)="compressFile()" class="inputfile">compressFile</button>
         </div>
       </div>
       <ng-container *ngIf="this._mainService.isEditButton; else elseTemplate">
         <button type="submit" (click)="addBook()">add</button>
+
+        <!-- <button (click)="uploadFile()">uploadFile</button> -->
       </ng-container>
       <ng-template #elseTemplate>
         <button type="submit" (click)="editCurrentBook()">confirm</button>

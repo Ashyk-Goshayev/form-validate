@@ -38,6 +38,9 @@ export class SignInComponent implements OnInit {
   }
 
   onsubmit() {
+    // this.localStore.show().subscribe(x => {
+    //   console.log("yes");
+    // });
     this.localStore.onsubmitSign(this.exampleForm.value);
     if (this.localStore.isCorrectSign) {
       return this.route.navigate(["/books"]);

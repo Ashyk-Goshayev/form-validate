@@ -55,7 +55,7 @@ export class LocalStorageService {
       return this._toastr.error("Fill empty inputs", "WARNING");
     }
     return this.http
-      .put(`${environment.apiUrl}books`, Object.assign(BooksForm, { image: img }))
+      .post(`${environment.apiUrl}books`, Object.assign(BooksForm, { image: img }))
       .subscribe(() => this._toastr.success("new book added", "Success"));
   }
   editBook() {
@@ -77,12 +77,12 @@ export class LocalStorageService {
     var isSameUser = null;
     var testEmail = /^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
     var testPass = /[a-zA-Z0-9]/g;
-    isSameUser = this.users.filter(item => item.email === formInput.email);
-    if (isSameUser.length >= 1) {
-      this.isSuccess = false;
-      this.hideCart = false;
-      return this._toastr.error("User exist", "WARNING!");
-    }
+    // isSameUser = this.users.filter(item => item.email === formInput.email);
+    // if (isSameUser.length >= 1) {
+    //   this.isSuccess = false;
+    //   this.hideCart = false;
+    //   return this._toastr.error("User exist", "WARNING!");
+    // }
     if (testEmail.test(formInput.email) && testPass.test(formInput.password)) {
       if (formInput.password === formInput.passwordRepeat) {
         this.isSuccess = true;
@@ -100,21 +100,22 @@ export class LocalStorageService {
       this._toastr.error("email should be like example@gmail.com", "WARNING!");
     }
   }
-
+  // show() {
+  //   return this.http.post(`${environment.apiUrl}authenticate`, { email: "inputForm.email" });
+  // }
   onsubmitSign(inputForm: { email: string; password: string }) {
     if (this.users != null || this.admin != null) {
       if ((this.users != null && this.admin.email !== inputForm.email) || this.admin.password !== inputForm.password) {
         this.user = this.users.filter(elem => {
           return elem.email == inputForm.email;
         });
-        this.http.post(`${environment.apiUrl}authenticate`, { email: inputForm.email, password: inputForm.password }).subscribe(
+        this.http.post(`${environment.apiUrl}authenticate`, { email: inputForm.email }, { responseType: "text" }).subscribe(
           (x: any) => {
-            localStorage.expiresIn = x.expiresIn;
-            localStorage.token = x.data;
-            localStorage.refreshToken = x.refreshToken;
+            localStorage.token = x;
             this.isLogin = true;
           },
-          err => {
+          (error: any) => {
+            console.log(error);
             this.isLogin = false;
           }
         );
