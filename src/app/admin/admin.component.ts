@@ -221,6 +221,7 @@ export class AdminComponent implements OnInit {
       users.map(user => {
         ELEMENT_DATA.push(user);
       });
+      ELEMENT_DATA.shift();
       this.dataSource = new MatTableDataSource<PeriodicElement>(ELEMENT_DATA);
       this.dataSource.paginator = this.paginator;
     });

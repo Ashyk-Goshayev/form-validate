@@ -39,7 +39,7 @@ export class RegisterComponent {
 
         if (this.imageCompress.byteCount(result) < 25000) {
           this.uploadedImg = "none";
-          this.imageCompress.compressFile(image, orientation, 50, 100).then(res => {
+          this.imageCompress.compressFile(image, orientation, 50, 50).then(res => {
             console.warn("Size in bytes is now:", this.imageCompress.byteCount(res));
             this.image = res;
           });

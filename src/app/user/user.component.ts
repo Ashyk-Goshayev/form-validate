@@ -12,7 +12,7 @@ import { ToastrService } from "ngx-toastr";
 export class UserComponent implements OnInit {
   user: string;
   img: string;
-  hasImage: string;
+  hasImage: boolean = true;
   show: string = "none";
   constructor(
     private localStore: LocalStorageService,
@@ -22,10 +22,10 @@ export class UserComponent implements OnInit {
   ) {
     this.user = JSON.parse(localStorage.currentUser)[0].email.split(/@/g)[0];
     if (JSON.parse(localStorage.currentUser)[0].image) {
-      this.hasImage = "none";
+      this.hasImage = false;
       this.img = JSON.parse(localStorage.currentUser)[0].image;
     } else {
-      this.hasImage = "";
+      this.hasImage = true;
     }
   }
   showLog() {
@@ -51,11 +51,12 @@ export class UserComponent implements OnInit {
     this.BookService.observableUser.subscribe(x => {
       this.user = x.email.split(/@/g)[0];
       if (x.image) {
-        this.hasImage = "none";
+        console.log(x.image);
+        this.hasImage = false;
         this.img = x.image;
       } else {
         this.img = "";
-        this.hasImage = "";
+        this.hasImage = true;
       }
     });
 

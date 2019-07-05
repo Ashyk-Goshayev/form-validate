@@ -74,7 +74,6 @@ export class LocalStorageService {
     return this.http.get(`${environment.apiUrl}users`);
   }
   async onsubmitReg(formInput: { email: string; password: string; passwordRepeat: string }, img: any) {
-    var isSameUser = null;
     var testEmail = /^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
     var testPass = /[a-zA-Z0-9]/g;
     if (testEmail.test(formInput.email) && testPass.test(formInput.password)) {

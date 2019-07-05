@@ -1,7 +1,7 @@
 <div class="btns">
   <div class="userBtn">
     <div class="img">
-      <i [ngStyle]="{ display: hasImage }" class="far fa-dizzy"></i>
+      <i *ngIf="hasImage" class="far fa-dizzy"></i>
       <img src="{{ img }}" alt="" />
     </div>
     <a class="user" (click)="showLog()">{{ user }}</a>
