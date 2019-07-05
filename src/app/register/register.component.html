@@ -3,7 +3,8 @@
     <form [formGroup]="exampleForm">
       <div class="form-group">
         <div class="logo">
-          <input type="file" (change)="getURL($event.target)" />
+          <!-- <input type="file" (change)="getURL($event.target)" /> -->
+          <button (click)="compressFile()" class="inputfile">compressFile</button>
           <div class="log">
             <img src="{{ image }}" alt="" />
             <i [ngStyle]="{ display: uploadedImg }" class="fas fa-plus-circle"></i>

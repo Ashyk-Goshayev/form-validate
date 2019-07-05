@@ -38,31 +38,29 @@ export class PopForBooksComponent implements OnInit {
   }
   compressFile() {
     this.imageCompress.uploadFile().then(({ image, orientation }) => {
-      // this.imgResultBeforeCompress = image;
       console.warn("Size in bytes was:", this.imageCompress.byteCount(image));
       this.imageCompress.compressFile(image, orientation, 50, 50).then(result => {
-        // this.imgResultAfterCompress = result;
-
         if (this.imageCompress.byteCount(result) < 25000) {
           this.imageCompress.compressFile(image, orientation, 50, 100).then(res => {
             console.warn("Size in bytes is now:", this.imageCompress.byteCount(res));
             this.image = res;
+            this.showImage = true;
+            this.hideLogo = false;
+            this._toastr.success("Loaded");
+            this.photoOfBook = res;
           });
         } else {
           this.image = result;
+          this.showImage = true;
+          this.hideLogo = false;
+          this.photoOfBook = result;
+          this._toastr.success("Loaded");
           console.warn("Size in bytes is now:", this.imageCompress.byteCount(result));
         }
       });
     });
   }
-  // uploadFile() {
-  //   this.imageCompress.uploadFile().then(({ image, orientation }) => {
-  //     // this.imgResultUpload = image;
 
-  //     console.warn(image);
-  //     console.warn(orientation);
-  //   });
-  // }
   addBook() {
     this._mainService.addBook(this.BooksForm.value, this.image);
     this.showImage = false;
@@ -73,21 +71,6 @@ export class PopForBooksComponent implements OnInit {
   formData = new FormData();
   selectedFile: File;
 
-  getURL(img) {
-    const reader = new FileReader();
-    this.file = img.files[0] as File;
-    if (this.file) {
-      reader.readAsDataURL(this.file);
-    }
-    reader.onload = () => {
-      this.image = <string>reader.result;
-      console.log(<string>reader.result);
-      this.showImage = true;
-      this.hideLogo = false;
-      this.photoOfBook = <string>reader.result;
-      this._toastr.success("Loaded");
-    };
-  }
   async editCurrentBook() {
     if (!this.BooksForm.value.name || !this.BooksForm.value.price) {
       this._toastr.error("Fill empty inputs", "WARNING");

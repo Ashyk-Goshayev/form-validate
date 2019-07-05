@@ -59,11 +59,11 @@ export class UserComponent implements OnInit {
       }
     });
 
-    // if (JSON.parse(localStorage.currentUser)[0].email !== "admin@gmail.com") {
-    //   if (new Date() > new Date(JSON.parse(localStorage.expiresIn))) {
-    //     this._toastr.error("Token Expired Update please");
-    //     this.logOut();
-    //   }
-    // }
+    if (JSON.parse(localStorage.currentUser)[0].email !== "admin@gmail.com") {
+      if (new Date() > new Date(JSON.parse(localStorage.expiresIn))) {
+        this._toastr.error("Token Expired Update please");
+        this.logOut();
+      }
+    }
   }
 }

@@ -7,6 +7,8 @@ import { ToastrService } from "ngx-toastr";
 import { BookServiceService } from "../book-service.service";
 import { User } from "../interfaces";
 import { HttpClient } from "@angular/common/http";
+import { NgxImageCompressService } from "ngx-image-compress";
+
 @Component({
   selector: "app-profile",
   templateUrl: "./profile.component.html",
@@ -33,7 +35,8 @@ export class ProfileComponent implements OnInit {
     private formBuilder: FormBuilder,
     private toastr: ToastrService,
     private bookService: BookServiceService,
-    private _http: HttpClient
+    private _http: HttpClient,
+    private imageCompress: NgxImageCompressService
   ) {
     // this.showImg = true;
     this.createForm();
@@ -41,7 +44,27 @@ export class ProfileComponent implements OnInit {
   goBack() {
     return this._location.back();
   }
+  compressFile() {
+    this.imageCompress.uploadFile().then(({ image, orientation }) => {
+      // this.imgResultBeforeCompress = image;
+      console.warn("Size in bytes was:", this.imageCompress.byteCount(image));
+      this.imageCompress.compressFile(image, orientation, 50, 50).then(result => {
+        // this.imgResultAfterCompress = result;
 
+        if (this.imageCompress.byteCount(result) < 25000) {
+          this.imageCompress.compressFile(image, orientation, 50, 100).then(res => {
+            console.warn("Size in bytes is now:", this.imageCompress.byteCount(res));
+            this.img = res;
+            this.showEditImg = false;
+          });
+        } else {
+          this.img = result;
+          this.showEditImg = false;
+          console.warn("Size in bytes is now:", this.imageCompress.byteCount(result));
+        }
+      });
+    });
+  }
   editPopUp() {
     if (!this.switch) {
       this.switch = true;
@@ -50,17 +73,17 @@ export class ProfileComponent implements OnInit {
     }
   }
 
-  getURL(img) {
-    var reader = new FileReader();
-    this.file = <File>img.files[0];
-    if (this.file) {
-      reader.readAsDataURL(this.file);
-    }
-    reader.onload = () => {
-      this.showEditImg = false;
-      this.img = <string>reader.result;
-    };
-  }
+  // getURL(img) {
+  //   var reader = new FileReader();
+  //   this.file = <File>img.files[0];
+  //   if (this.file) {
+  //     reader.readAsDataURL(this.file);
+  //   }
+  //   reader.onload = () => {
+  //     this.showEditImg = false;
+  //     this.img = <string>reader.result;
+  //   };
+  // }
   editUser() {
     return this._http.put(
       `${environment.apiUrl}users/${JSON.parse(localStorage.currentUser)[0].id}`,

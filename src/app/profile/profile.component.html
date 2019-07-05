@@ -1,7 +1,8 @@
 <div class="popUp" *ngIf="switch">
   <form [formGroup]="editForm">
     <div class="file">
-      <input type="file" accept="image/*" (change)="getURL($event.target)" />
+      <!-- <input type="file" accept="image/*" (change)="getURL($event.target)" /> -->
+      <button (click)="compressFile()" class="inputfile">compressFile</button>
       <ng-container *ngIf="showEditImg; else temp">
         <i class="fas fa-user-tie"></i>
       </ng-container>

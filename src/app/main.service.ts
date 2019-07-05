@@ -30,7 +30,7 @@ export class LocalStorageService {
   isEditButton: boolean = true;
   switchBooksPop: boolean = false;
   switchEditPop: boolean = false;
-  isLogin: Boolean = false;
+  isLogin: Boolean;
   user: User[];
   constructor(private _toastr: ToastrService, private router: Router, private http: HttpClient) {
     this.arrayOfUsers = [];
@@ -77,21 +77,19 @@ export class LocalStorageService {
     var isSameUser = null;
     var testEmail = /^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
     var testPass = /[a-zA-Z0-9]/g;
-    // isSameUser = this.users.filter(item => item.email === formInput.email);
-    // if (isSameUser.length >= 1) {
-    //   this.isSuccess = false;
-    //   this.hideCart = false;
-    //   return this._toastr.error("User exist", "WARNING!");
-    // }
     if (testEmail.test(formInput.email) && testPass.test(formInput.password)) {
       if (formInput.password === formInput.passwordRepeat) {
-        this.isSuccess = true;
-        this.hideCart = true;
         this.http
-          .post<User>(`${environment.apiUrl}register`, { email: formInput.email, password: formInput.password, image: img || "null" })
-          .subscribe(() => {
-            this.getData().subscribe((users: User[]) => (this.users = users));
-            this._toastr.success("Registration passed", "SUCCESS");
+          .post<any>(`${environment.apiUrl}register`, { email: formInput.email, password: formInput.password, image: img || "null" })
+          .subscribe(x => {
+            if (x.success) {
+              this.router.navigate(["signIn"]);
+              this.hideCart = true;
+              this.getData().subscribe((users: User[]) => (this.users = users));
+              this._toastr.success("Registration passed", "SUCCESS");
+            } else {
+              this._toastr.error("User exists");
+            }
           });
       } else {
         this._toastr.error("Passwords do not match", "WARNING!");
@@ -100,34 +98,32 @@ export class LocalStorageService {
       this._toastr.error("email should be like example@gmail.com", "WARNING!");
     }
   }
-  // show() {
-  //   return this.http.post(`${environment.apiUrl}authenticate`, { email: "inputForm.email" });
-  // }
+
   onsubmitSign(inputForm: { email: string; password: string }) {
     if (this.users != null || this.admin != null) {
       if ((this.users != null && this.admin.email !== inputForm.email) || this.admin.password !== inputForm.password) {
         this.user = this.users.filter(elem => {
           return elem.email == inputForm.email;
         });
-        this.http.post(`${environment.apiUrl}authenticate`, { email: inputForm.email }, { responseType: "text" }).subscribe(
+        this.http.post(`${environment.apiUrl}authenticate`, { email: inputForm.email, password: inputForm.password }).subscribe(
           (x: any) => {
-            localStorage.token = x;
-            this.isLogin = true;
+            if (x.success) {
+              this.router.navigate(["books"]);
+              this.hide = false;
+              localStorage.token = x.token;
+              localStorage.expiresIn = x.expiresIn;
+              localStorage.currentUser = JSON.stringify(this.user);
+              this.hideCart = true;
+              this._toastr.success(`Welcome `, "SUCCESS");
+            } else {
+              this._toastr.error("email or password is wrong", "WARNING!");
+            }
           },
           (error: any) => {
             console.log(error);
             this.isLogin = false;
           }
         );
-        if (this.isLogin) {
-          localStorage.currentUser = JSON.stringify(this.user);
-          this.hideCart = true;
-          this.isCorrectSign = true;
-          this.hide = false;
-          this._toastr.success(`Welcome `, "SUCCESS");
-        } else {
-          this._toastr.error("email or password is wrong", "WARNING!");
-        }
       } else if (this.admin.email === inputForm.email && this.admin.password === inputForm.password) {
         localStorage.user = this.admin.email;
         localStorage.currentUser = JSON.stringify([{ email: this.admin.email }]);
